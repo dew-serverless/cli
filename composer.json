@@ -29,6 +29,7 @@
             "Dew\\Cli\\Tests\\": "tests/"
         }
     },
+    "bin": ["dew"],
     "minimum-stability": "stable",
     "prefer-stable": true
 }
