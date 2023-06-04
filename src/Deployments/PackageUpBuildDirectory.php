@@ -13,7 +13,7 @@ class PackageUpBuildDirectory
     {
         echo "Package up build directory\n";
 
-        $files = (new Finder)->in($deployment->buildDir());
+        $files = $this->files()->in($deployment->buildDir());
 
         $zip = new ZipArchive;
 
@@ -32,5 +32,10 @@ class PackageUpBuildDirectory
         $zip->close();
 
         return $deployment;
+    }
+
+    public function files()
+    {
+        return (new Finder)->ignoreDotFiles(false);
     }
 }
