@@ -21,6 +21,13 @@ class Deployment
         ReleaseVersion::class,
     ];
 
+    /**
+     * The project associated with the deployment.
+     *
+     * @var Project
+     */
+    protected Project $project;
+
     public function __construct(
         protected string $appDir
     ) {
@@ -36,6 +43,29 @@ class Deployment
         }, $this);
     }
 
+    /**
+     * Associate the deployment with given project.
+     *
+     * @param  Project  $project
+     * @return $this
+     */
+    public function projectUsing(Project $project): self
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Retrieve the associated project.
+     *
+     * @return Project
+     */
+    public function project(): Project
+    {
+        return $this->project;
+    }
+
     public function appDir()
     {
         return $this->appDir;
@@ -46,8 +76,13 @@ class Deployment
         return Path::join($this->appDir(), '.dew', 'build');
     }
 
+    public function zipName()
+    {
+        return 'build.zip';
+    }
+
     public function zipPath()
     {
-        return Path::join($this->appDir(), '.dew', 'build.zip');
+        return Path::join($this->appDir(), '.dew', $this->zipName());
     }
 }
