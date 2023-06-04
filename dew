@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Dew\Cli\Commands\CliCommand;
 use Dew\Cli\Commands\DeployCommand;
 use Symfony\Component\Console\Application;
 
@@ -8,6 +9,7 @@ require __DIR__.'/vendor/autoload.php';
 
 $app = new Application('Dew CLI', 'v0.0.1');
 
+$app->add(new CliCommand);
 $app->add(new DeployCommand);
 
 $app->run();
