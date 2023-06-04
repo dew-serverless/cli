@@ -39,4 +39,9 @@ class Project
     {
         return sprintf('%s-deployments', $this->name());
     }
+
+    public function serviceName()
+    {
+        return $this->name();
+    }
 }

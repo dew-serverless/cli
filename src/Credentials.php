@@ -6,7 +6,8 @@ class Credentials
 {
     public function __construct(
         protected string $keyId,
-        protected string $keySecret
+        protected string $keySecret,
+        protected string $accountId
     ) {
         //
     }
@@ -19,5 +20,10 @@ class Credentials
     public function keySecret(): string
     {
         return $this->keySecret;
+    }
+
+    public function accountId(): string
+    {
+        return $this->accountId;
     }
 }
