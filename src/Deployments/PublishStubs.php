@@ -16,6 +16,7 @@ class PublishStubs
 
         $filesystem->copy($stubs.'/.rr.yaml', $buildDir.'/.rr.yaml');
         $filesystem->copy($stubs.'/runtime.php', $buildDir.'/runtime.php');
+        $filesystem->copy($stubs.'/handler.php', $buildDir.'/handler.php');
 
         return $deployment;
     }
