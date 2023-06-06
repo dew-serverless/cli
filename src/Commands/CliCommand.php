@@ -34,7 +34,7 @@ class CliCommand extends Command
             'endpoint' => sprintf('%s.%s.fc.aliyuncs.com', $credentials->accountId(), $project->region()),
         ]));
 
-        $response = $fc->invokeFunction($project->serviceName(), 'http', new InvokeFunctionRequest([
+        $response = $fc->invokeFunction($project->serviceName(), 'console', new InvokeFunctionRequest([
             'body' => Utils::toBytes(json_encode([
                 'type' => 'cli',
                 'command' => $input->getArgument('cmd'),

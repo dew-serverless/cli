@@ -10,7 +10,8 @@ use Dew\Cli\Deployment;
 
 class ReleaseVersion
 {
-    const FUNCTION_NAME = 'http';
+    const HTTP_FUNCTION = 'http';
+    const CONSOLE_FUNCTION = 'console';
 
     public function __invoke(Deployment $deployment): Deployment
     {
@@ -25,12 +26,15 @@ class ReleaseVersion
             'endpoint' => sprintf('%s.%s.fc.aliyuncs.com', $credentials->accountId(), $project->region()),
         ]));
 
-        $fc->updateFunction($project->serviceName(), self::FUNCTION_NAME, new UpdateFunctionRequest([
+        $request = new UpdateFunctionRequest([
             'code' => new Code([
                 'ossBucketName' => $project->deploymentBucket(),
                 'ossObjectName' => $deployment->zipName(),
             ]),
-        ]));
+        ]);
+
+        $fc->updateFunction($project->serviceName(), self::HTTP_FUNCTION, $request);
+        $fc->updateFunction($project->serviceName(), self::CONSOLE_FUNCTION, $request);
 
         return $deployment;
     }
