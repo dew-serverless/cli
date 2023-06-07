@@ -44,8 +44,8 @@ class CliCommand extends Command
         $body = Utils::toString($response->body);
         $payload = json_decode($body, associative: true);
 
-        $output->writeln($payload['result']);
+        $output->writeln($payload['output']);
 
-        return $payload['exit_code'];
+        return $payload['status'];
     }
 }
