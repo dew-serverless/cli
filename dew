@@ -3,6 +3,7 @@
 
 use Dew\Cli\Commands\CliCommand;
 use Dew\Cli\Commands\DeployCommand;
+use Dew\Cli\Commands\LoginCommand;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
@@ -13,6 +14,7 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 
 $app = new Application('Dew CLI', 'v0.0.1');
 
+$app->add(new LoginCommand);
 $app->add(new CliCommand);
 $app->add(new DeployCommand);
 
