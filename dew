@@ -5,7 +5,11 @@ use Dew\Cli\Commands\CliCommand;
 use Dew\Cli\Commands\DeployCommand;
 use Symfony\Component\Console\Application;
 
-require __DIR__.'/vendor/autoload.php';
+if (file_exists(__DIR__.'/vendor/autoload.php')) {
+    require_once __DIR__.'/vendor/autoload.php';
+} else {
+    require_once __DIR__.'/../../autoload.php';
+}
 
 $app = new Application('Dew CLI', 'v0.0.1');
 
