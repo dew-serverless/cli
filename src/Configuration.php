@@ -22,7 +22,7 @@ class Configuration
         return $this->set('token', $accessToken);
     }
 
-    public function getToken(): self
+    public function getToken(): string
     {
         return $this->get('token');
     }
