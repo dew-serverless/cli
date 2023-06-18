@@ -13,7 +13,6 @@ class Client
     {
         return new BaseClient([
             'base_uri' => getenv('DEW_ENDPOINT'),
-            'timeout' => 10.0,
         ]);
     }
 }
