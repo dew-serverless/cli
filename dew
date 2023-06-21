@@ -25,7 +25,7 @@ $app->add(new ProjectConnectCommand);
 $app->add(new InitCommand);
 $app->add(new EnvironmentCreateCommand);
 $app->add(new EnvironmentDestroyCommand);
-$app->add(new CliCommand);
+// $app->add(new CliCommand);
 $app->add(new DeployCommand);
 
 $app->run();
