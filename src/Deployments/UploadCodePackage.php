@@ -3,7 +3,7 @@
 namespace Dew\Cli\Deployments;
 
 use Dew\Cli\Deployment;
-use Dew\Cli\Oss;
+use OSS\OssClient;
 
 class UploadCodePackage
 {
@@ -11,10 +11,19 @@ class UploadCodePackage
     {
         echo "Upload the code package\n";
 
-        $project = $deployment->project();
-        $oss = Oss::forProject($project);
+        $oss = new OssClient(
+            $deployment->context['credentials']['access_key_id'],
+            $deployment->context['credentials']['access_key_secret'],
+            sprintf('oss-%s.aliyuncs.com', $deployment->context['region']),
+            $isCname = false,
+            $deployment->context['credentials']['security_token'],
+        );
 
-        $oss->uploadFile($project->deploymentBucket(), $deployment->zipName(), $deployment->zipPath());
+        $oss->uploadFile(
+            $deployment->context['deployment_bucket'],
+            $deployment->context['deployment_object'],
+            $deployment->zipPath()
+        );
 
         return $deployment;
     }

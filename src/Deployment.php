@@ -13,7 +13,11 @@ use Symfony\Component\Filesystem\Path;
 
 class Deployment
 {
+    /**
+     * Process of deployment.
+     */
     protected const PROCESS = [
+        RetrieveDeploymentContext::class,
         PrepareBuildDirectory::class,
         CopyFilesToBuildDirectory::class,
         InstallDependencies::class,
@@ -24,16 +28,69 @@ class Deployment
     ];
 
     /**
-     * The project associated with the deployment.
-     *
-     * @var Project
+     * Context of the deployment.
      */
-    protected Project $project;
+    public array $context;
+
+    /**
+     * Token for communicating with Dew.
+     */
+    public string $token;
+
+    /**
+     * Name of the environment.
+     */
+    public string $environment;
+
+    /**
+     * Project configuration.
+     */
+    public ProjectConfig $config;
 
     public function __construct(
         protected string $appDir
     ) {
         //
+    }
+
+    /**
+     * Configure Dew token.
+     */
+    public function tokenUsing(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Configure project configuration.
+     */
+    public function configUsing(ProjectConfig $config): self
+    {
+        $this->config = $config;
+
+        return $this;
+    }
+
+    /**
+     * Configure environment to deploy.
+     */
+    public function forEnvironment(string $environment): self
+    {
+        $this->environment = $environment;
+
+        return $this;
+    }
+
+    /**
+     * Configure deployment context.
+     */
+    public function contextUsing(array $context): self
+    {
+        $this->context = $context;
+
+        return $this;
     }
 
     public function handle(): void
@@ -43,29 +100,6 @@ class Deployment
 
             return $handle($deployment);
         }, $this);
-    }
-
-    /**
-     * Associate the deployment with given project.
-     *
-     * @param  Project  $project
-     * @return $this
-     */
-    public function projectUsing(Project $project): self
-    {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    /**
-     * Retrieve the associated project.
-     *
-     * @return Project
-     */
-    public function project(): Project
-    {
-        return $this->project;
     }
 
     public function appDir()
