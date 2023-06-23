@@ -21,6 +21,7 @@ class RetrieveDeploymentContext
                 'ram' => $environment['ram'],
                 'php' => $environment['php'],
                 'env' => $environment['env'] ?? [],
+                'layers' => $environment['layers'] ?? [],
             ],
         ]);
 
