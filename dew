@@ -9,6 +9,7 @@ use Dew\Cli\Commands\InitCommand;
 use Dew\Cli\Commands\LoginCommand;
 use Dew\Cli\Commands\ProjectConnectCommand;
 use Dew\Cli\Commands\ProjectCreateCommand;
+use Dew\Cli\Commands\RollbackCommand;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
@@ -27,5 +28,6 @@ $app->add(new EnvironmentCreateCommand);
 $app->add(new EnvironmentDestroyCommand);
 // $app->add(new CliCommand);
 $app->add(new DeployCommand);
+$app->add(new RollbackCommand);
 
 $app->run();
