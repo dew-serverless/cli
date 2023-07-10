@@ -26,6 +26,7 @@ class DeployCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $deployment = (new Deployment(getcwd()))
+            ->usePublicPath('/public')
             ->tokenUsing(Configuration::createFromEnvironment()->getToken())
             ->configUsing(ProjectConfig::load())
             ->forEnvironment($input->getArgument('environment') ?: $io->ask('Environment name'));

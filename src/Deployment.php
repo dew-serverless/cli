@@ -8,6 +8,7 @@ use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
 use Dew\Cli\Deployments\ReleaseVersion;
+use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
 use Symfony\Component\Filesystem\Path;
 
@@ -20,6 +21,7 @@ class Deployment
         RetrieveDeploymentContext::class,
         PrepareBuildDirectory::class,
         CopyFilesToBuildDirectory::class,
+        UploadAssets::class,
         InstallDependencies::class,
         PublishStubs::class,
         PackageUpBuildDirectory::class,
@@ -46,6 +48,11 @@ class Deployment
      * Project configuration.
      */
     public ProjectConfig $config;
+
+    /**
+     * The public path of the application.
+     */
+    protected string $publicPath;
 
     public function __construct(
         protected string $appDir
@@ -105,6 +112,24 @@ class Deployment
     public function appDir()
     {
         return $this->appDir;
+    }
+
+    /**
+     * Configure public path of the application.
+     */
+    public function usePublicPath(string $path): self
+    {
+        $this->publicPath = $path;
+
+        return $this;
+    }
+
+    /**
+     * The public path of the application.
+     */
+    public function publicPath(): string
+    {
+        return $this->publicPath;
     }
 
     public function buildDir()
