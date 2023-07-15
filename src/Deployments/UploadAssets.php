@@ -24,13 +24,16 @@ class UploadAssets
             $deployment->context['credentials']['security_token'],
         );
 
-        $assets = $this->files()
-            ->in(Path::join($deployment->buildDir(), $deployment->publicPath()));
+        $assets = $this->files()->in(
+            $publicPath = Path::join($deployment->buildDir(), $deployment->publicPath())
+        );
 
         foreach ($assets as $file) {
+            $relativePath = Path::makeRelative($file->getPath(), $publicPath);
+
             $oss->uploadFile(
                 $deployment->context['asset_bucket'],
-                $deployment->context['uuid'].'/'.$file->getFilename(),
+                Path::join($deployment->context['uuid'], $relativePath, $file->getFilename()),
                 $file
             );
         }
@@ -43,6 +46,6 @@ class UploadAssets
      */
     public function files(): Finder
     {
-        return (new Finder)->notName('*.php');
+        return (new Finder)->files()->notName('*.php');
     }
 }
