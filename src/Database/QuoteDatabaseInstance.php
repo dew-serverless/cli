@@ -121,8 +121,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
                 'json' => [
                     'type' => $this->type(),
                     'engine' => $this->engine,
-                    'engine_version' => $this->engineVersion,
-                    'deployment' => $this->deployment,
+                    'engine_version' => $this->engineVersion ?? null,
+                    'deployment' => $this->deployment ?? null,
                 ],
             ]);
 
