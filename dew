@@ -3,6 +3,7 @@
 
 use Dew\Cli\Commands\CliCommand;
 use Dew\Cli\Commands\DatabaseCreateCommand;
+use Dew\Cli\Commands\DatabaseDeleteCommand;
 use Dew\Cli\Commands\DeployCommand;
 use Dew\Cli\Commands\EnvironmentCreateCommand;
 use Dew\Cli\Commands\EnvironmentDestroyCommand;
@@ -28,6 +29,7 @@ $app->add(new InitCommand);
 $app->add(new EnvironmentCreateCommand);
 $app->add(new EnvironmentDestroyCommand);
 $app->add(new DatabaseCreateCommand);
+$app->add(new DatabaseDeleteCommand);
 // $app->add(new CliCommand);
 $app->add(new DeployCommand);
 $app->add(new RollbackCommand);
