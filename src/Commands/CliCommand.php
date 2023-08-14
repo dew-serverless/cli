@@ -2,50 +2,42 @@
 
 namespace Dew\Cli\Commands;
 
-use AlibabaCloud\SDK\FCOpen\V20210406\FCOpen;
-use AlibabaCloud\SDK\FCOpen\V20210406\Models\InvokeFunctionRequest;
-use AlibabaCloud\Tea\Utils\Utils;
-use Darabonba\OpenApi\Models\Config;
-use Dew\Cli\Concerns\ResolvesProject;
+use Dew\Cli\Configuration;
+use Dew\Cli\ExecuteCommand;
+use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'cli', description: 'Run command remotely')]
+#[AsCommand(name: 'cli', description: 'Execute command')]
 class CliCommand extends Command
 {
-    use ResolvesProject;
-
+    /**
+     * Configures the current command.
+     */
     protected function configure(): void
     {
-        $this->addArgument('cmd', InputArgument::REQUIRED, 'The command send remotely');
+        $this->addArgument('env', InputArgument::REQUIRED, 'The project environment');
+        $this->addArgument('cmd', InputArgument::REQUIRED, 'The command to be executed');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * Executes the current command.
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $project = $this->project();
-        $credentials = $project->credentials();
+        $response = (new ExecuteCommand)
+            ->forProject(ProjectConfig::load()->get('id'))
+            ->tokenUsing(Configuration::createFromEnvironment()->getToken())
+            ->on($input->getArgument('env'))
+            ->execute($input->getArgument('cmd'));
 
-        $fc = new FcOpen(new Config([
-            'accessKeyId' => $credentials->keyId(),
-            'accessKeySecret' => $credentials->keySecret(),
-            'endpoint' => sprintf('%s.%s.fc.aliyuncs.com', $credentials->accountId(), $project->region()),
-        ]));
+        $data = $response['data'];
 
-        $response = $fc->invokeFunction($project->serviceName(), 'console', new InvokeFunctionRequest([
-            'body' => Utils::toBytes(json_encode([
-                'type' => 'cli',
-                'command' => $input->getArgument('cmd'),
-            ])),
-        ]));
+        $output->write($data['output']);
 
-        $body = Utils::toString($response->body);
-        $payload = json_decode($body, associative: true);
-
-        $output->writeln($payload['output']);
-
-        return $payload['status'];
+        return $data['status'] ?? Command::SUCCESS;
     }
 }
