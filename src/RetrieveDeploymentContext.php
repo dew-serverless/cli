@@ -22,6 +22,7 @@ class RetrieveDeploymentContext
                 'php' => $environment['php'],
                 'env' => $environment['env'] ?? [],
                 'layers' => $environment['layers'] ?? [],
+                'database' => $environment['database'] ?? null,
             ],
         ]);
 
