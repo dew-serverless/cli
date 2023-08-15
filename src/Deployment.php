@@ -9,6 +9,7 @@ use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
 use Dew\Cli\Deployments\ReleaseVersion;
 use Dew\Cli\Deployments\RunBuildSteps;
+use Dew\Cli\Deployments\RunDeploySteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
 use Symfony\Component\Filesystem\Path;
@@ -29,6 +30,7 @@ class Deployment
         PackageUpBuildDirectory::class,
         UploadCodePackage::class,
         ReleaseVersion::class,
+        RunDeploySteps::class,
     ];
 
     /**
