@@ -4,6 +4,9 @@ namespace Dew\Cli;
 
 class RetrieveDeploymentContext
 {
+    /**
+     * Retrieve the context for deployment.
+     */
     public function __invoke(Deployment $deployment): Deployment
     {
         $environment = $deployment->config->get($deployment->environment);
