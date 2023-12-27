@@ -27,6 +27,7 @@ class RetrieveDeploymentContext
                 'layers' => $environment['layers'] ?? [],
                 'database' => $environment['database'] ?? null,
                 'cache' => $environment['cache'] ?? null,
+                'queue' => $environment['queue'] ?? null,
             ],
         ]);
 
