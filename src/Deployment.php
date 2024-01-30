@@ -3,7 +3,6 @@
 namespace Dew\Cli;
 
 use Dew\Cli\Deployments\CopyFilesToBuildDirectory;
-use Dew\Cli\Deployments\InstallDependencies;
 use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
@@ -25,7 +24,6 @@ class Deployment
         CopyFilesToBuildDirectory::class,
         RunBuildSteps::class,
         UploadAssets::class,
-        InstallDependencies::class,
         PublishStubs::class,
         PackageUpBuildDirectory::class,
         UploadCodePackage::class,
