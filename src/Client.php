@@ -59,7 +59,7 @@ final class Client implements CommunicatesWithDew
     private function send(string $method, string $uri, array $data = []): array
     {
         $response = $this->client()->request($method, $uri, [
-            'json' => $data
+            'json' => $data,
         ]);
 
         return json_decode((string) $response->getBody(), associative: true);
