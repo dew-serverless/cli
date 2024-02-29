@@ -35,14 +35,9 @@ final class Client implements CommunicatesWithDew
      */
     public function runCommand(int $projectId, string $environment, string $command): array
     {
-        $response = $this->client()
-            ->post('/api/projects/'.$projectId.'/environments/'.$environment.'/commands', [
-                'json' => [
-                    'command' => $command,
-                ],
-            ]);
-
-        return json_decode((string) $response->getBody(), associative: true);
+        return $this->send('POST', '/api/projects/'.$projectId.'/environments/'.$environment.'/commands', [
+            'command' => $command,
+        ]);
     }
 
     /**
@@ -52,8 +47,20 @@ final class Client implements CommunicatesWithDew
      */
     public function getCommand(int $projectId, string $environment, int $commandId): array
     {
-        $response = $this->client()
-            ->get('/api/projects/'.$projectId.'/environments/'.$environment.'/commands/'.$commandId);
+        return $this->send('GET', '/api/projects/'.$projectId.'/environments/'.$environment.'/commands/'.$commandId);
+    }
+
+    /**
+     * Send the HTTP request to Dew server.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function send(string $method, string $uri, array $data = []): array
+    {
+        $response = $this->client()->request($method, $uri, [
+            'json' => $data
+        ]);
 
         return json_decode((string) $response->getBody(), associative: true);
     }
@@ -61,7 +68,7 @@ final class Client implements CommunicatesWithDew
     /**
      * Make a new Guzzle client.
      */
-    protected function client(): BaseClient
+    private function client(): BaseClient
     {
         return new BaseClient([
             'base_uri' => $this->endpoint,
