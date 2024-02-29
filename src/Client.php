@@ -3,7 +3,7 @@
 namespace Dew\Cli;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
-use GuzzleHttp\Client as BaseClient;
+use GuzzleHttp\Client as GuzzleClient;
 
 final class Client implements CommunicatesWithDew
 {
@@ -68,9 +68,9 @@ final class Client implements CommunicatesWithDew
     /**
      * Make a new Guzzle client.
      */
-    private function client(): BaseClient
+    private function client(): GuzzleClient
     {
-        return new BaseClient([
+        return new GuzzleClient([
             'base_uri' => $this->endpoint,
             'headers' => [
                 'Accept' => 'application/json',
