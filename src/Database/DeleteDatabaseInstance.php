@@ -46,13 +46,7 @@ class DeleteDatabaseInstance
     {
         Client::make()
             ->delete('/api/projects/'.$this->projectId.'/databases/'.$this->instance, [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => [
-                    'name' => $this->instance,
-                ],
+                'name' => $this->instance,
             ]);
     }
 }

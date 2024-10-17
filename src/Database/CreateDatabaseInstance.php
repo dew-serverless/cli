@@ -49,18 +49,10 @@ abstract class CreateDatabaseInstance
      */
     public function create(): array
     {
-        $response = Client::make()
-            ->post('/api/projects/'.$this->projectId.'/databases', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => $this->toAcsRequest(),
-            ]);
+        $response = Client::make(['token' => $this->token])
+            ->post('/api/projects/'.$this->projectId.'/databases', $this->toAcsRequest());
 
-        $decoded = json_decode($response->getBody()->getContents(), associative: true);
-
-        return $decoded['data'];
+        return $response['data'];
     }
 
     /**

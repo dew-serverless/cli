@@ -112,23 +112,15 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function getAvailableZones(): array
     {
-        $response = Client::make()
+        $response = Client::make(['token' => $this->token])
             ->get('/api/projects/'.$this->projectId.'/databases/available-zones', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => [
-                    'type' => $this->type(),
-                    'engine' => $this->engine,
-                    'engine_version' => $this->engineVersion ?? null,
-                    'deployment' => $this->deployment ?? null,
-                ],
+                'type' => $this->type(),
+                'engine' => $this->engine,
+                'engine_version' => $this->engineVersion ?? null,
+                'deployment' => $this->deployment ?? null,
             ]);
 
-        $decoded = json_decode($response->getBody()->getContents(), associative: true);
-
-        return $decoded['data'];
+        return $response['data'];
     }
 
     /**
@@ -136,25 +128,17 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function getAvailableClasses(): array
     {
-        $response = Client::make()
+        $response = Client::make(['token' => $this->token])
             ->get('/api/projects/'.$this->projectId.'/databases/available-specs', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => [
-                    'type' => $this->type(),
-                    'zone' => $this->zoneId,
-                    'engine' => $this->engine,
-                    'engine_version' => $this->engineVersion,
-                    'deployment' => $this->deployment,
-                    'storage_type' => $this->storageType,
-                ],
+                'type' => $this->type(),
+                'zone' => $this->zoneId,
+                'engine' => $this->engine,
+                'engine_version' => $this->engineVersion,
+                'deployment' => $this->deployment,
+                'storage_type' => $this->storageType,
             ]);
 
-        $decoded = json_decode($response->getBody()->getContents(), associative: true);
-
-        return $decoded['data'];
+        return $response['data'];
     }
 
     /**
@@ -198,18 +182,10 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function requestQuotation(): array
     {
-        $response = Client::make()
-            ->get('/api/projects/'.$this->projectId.'/databases/quotation', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => $this->toQuotationRequest(),
-            ]);
+        $response = Client::make(['token' => $this->token])
+            ->get('/api/projects/'.$this->projectId.'/databases/quotation', $this->toQuotationRequest());
 
-        $decoded = json_decode($response->getBody()->getContents(), associative: true);
-
-        return $decoded['data'];
+        return $response['data'];
     }
 
     /**

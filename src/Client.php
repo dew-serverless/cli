@@ -20,12 +20,14 @@ final class Client implements CommunicatesWithDew
 
     /**
      * Create a new Dew client from the configuration setup.
+     *
+     * @param  array<string, mixed>  $config
      */
-    public static function make(): static
+    public static function make(array $config = []): static
     {
         return new self(
-            getenv('DEW_ENDPOINT'),
-            Configuration::createFromEnvironment()->getToken()
+            $config['endpoint'] ?? getenv('DEW_ENDPOINT'),
+            $config['token'] ?? Configuration::createFromEnvironment()->getToken()
         );
     }
 
@@ -55,30 +57,42 @@ final class Client implements CommunicatesWithDew
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function send(string $method, string $uri, array $data = []): array
+    public function send(string $method, string $uri, array $data = []): array
     {
+        $placement = $method === 'GET' ? 'query' : 'json';
+
         $response = $this->client()->request($method, $uri, [
-            'json' => $data,
+            $placement => $data,
         ]);
 
         return json_decode((string) $response->getBody(), associative: true);
     }
 
     /**
+     * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function get(string $uri): array
+    public function get(string $uri, array $data = []): array
     {
-        return $this->send('GET', $uri);
+        return $this->send('GET', $uri, $data);
     }
 
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function post(string $uri, array $data = []): array
+    public function post(string $uri, array $data = []): array
     {
         return $this->send('POST', $uri, $data);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public function delete(string $uri, array $data = []): array
+    {
+        return $this->send('DELETE', $uri, $data);
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace Dew\Cli\Commands;
 
 use Dew\Cli\Client;
-use Dew\Cli\Configuration;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,8 +21,6 @@ class ProjectCreateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $token = Configuration::createFromEnvironment()->getToken();
-
         $io = new SymfonyStyle($input, $output);
 
         $regions = ['us-west-1'];
@@ -34,14 +31,8 @@ class ProjectCreateCommand extends Command
             ?: $io->choice('The project deployed to', $regions, $regions[0]);
 
         $response = Client::make()->post('/api/projects', [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => sprintf('Bearer %s', $token),
-            ],
-            'json' => [
-                'name' => $name,
-                'region' => $region,
-            ],
+            'name' => $name,
+            'region' => $region,
         ]);
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {

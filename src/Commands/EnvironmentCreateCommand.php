@@ -3,7 +3,6 @@
 namespace Dew\Cli\Commands;
 
 use Dew\Cli\Client;
-use Dew\Cli\Configuration;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,19 +21,12 @@ class EnvironmentCreateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $token = Configuration::createFromEnvironment()->getToken();
         $projectConfig = ProjectConfig::load();
         $io = new SymfonyStyle($input, $output);
 
         $response = Client::make()
             ->post(sprintf('/api/projects/%s/environments', $projectConfig->get('id')), [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $token),
-                ],
-                'json' => [
-                    'name' => $input->getArgument('name') ?: $io->ask('Environment name'),
-                ],
+                'name' => $input->getArgument('name') ?: $io->ask('Environment name'),
             ]);
 
         if ($response->getStatusCode() >= 400) {

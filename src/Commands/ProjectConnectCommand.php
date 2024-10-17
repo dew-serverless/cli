@@ -3,7 +3,6 @@
 namespace Dew\Cli\Commands;
 
 use Dew\Cli\Client;
-use Dew\Cli\Configuration;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,18 +27,10 @@ class ProjectConnectCommand extends Command
         $key = $input->getArgument('key') ?: $io->ask('ACS access key id');
         $secret = $input->getArgument('secret') ?: $io->askHidden('ACS access key secret');
 
-        $token = Configuration::createFromEnvironment()->getToken();
-
         $response = Client::make()
             ->post(sprintf('/api/projects/%s/connect', $input->getArgument('project')), [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $token),
-                ],
-                'json' => [
-                    'access_key_id' => $key,
-                    'access_key_secret' => $secret,
-                ],
+                'access_key_id' => $key,
+                'access_key_secret' => $secret,
             ]);
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {

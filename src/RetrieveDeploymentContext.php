@@ -11,15 +11,11 @@ class RetrieveDeploymentContext
     {
         $environment = $deployment->config->get($deployment->environment);
 
-        $response = Client::make()->post(sprintf(
-            '/api/projects/%s/environments/%s/deployments',
-            $deployment->config->get('id'), $deployment->environment
-        ), [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => sprintf('Bearer %s', $deployment->token),
-            ],
-            'json' => [
+        $response = Client::make(['token' => $deployment->token])
+            ->post(sprintf(
+                '/api/projects/%s/environments/%s/deployments',
+                $deployment->config->get('id'), $deployment->environment
+            ), [
                 'cpu' => $environment['cpu'],
                 'ram' => $environment['ram'],
                 'php' => $environment['php'],
@@ -28,12 +24,9 @@ class RetrieveDeploymentContext
                 'database' => $environment['database'] ?? null,
                 'cache' => $environment['cache'] ?? null,
                 'queue' => $environment['queue'] ?? null,
-            ],
-        ]);
+            ]);
 
-        $data = json_decode($response->getBody()->getContents(), associative: true);
-
-        $deployment->contextUsing($data['data']);
+        $deployment->contextUsing($response['data']);
 
         return $deployment;
     }
