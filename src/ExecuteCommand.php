@@ -3,6 +3,7 @@
 namespace Dew\Cli;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Models\Command as Model;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -53,18 +54,26 @@ final class ExecuteCommand
      */
     public function execute(string $command): int
     {
-        $invocation = $this->dew->runCommand($this->projectId, $this->environment, $command);
+        $invocation = $this->run($command);
 
-        while ($invocation['data']['status'] === 'running') {
+        while ($invocation->isRunning()) {
             sleep(1);
 
-            $invocation = $this->dew->getCommand(
-                $this->projectId, $this->environment, $invocation['data']['id']
-            );
+            $invocation = $this->get($invocation->id);
         }
 
-        $this->output->writeln($invocation['data']['output']);
+        $this->output->writeln($invocation->output);
 
-        return $invocation['data']['exit_code'] ?? Command::SUCCESS;
+        return $invocation->exit_code ?? Command::SUCCESS;
+    }
+
+    private function run(string $command): Model
+    {
+        return $this->dew->runCommand($this->projectId, $this->environment, $command);
+    }
+
+    private function get(string $commandId): Model
+    {
+        return $this->dew->getCommand($this->projectId, $this->environment, $commandId);
     }
 }

@@ -3,6 +3,7 @@
 namespace Dew\Cli;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Models\Command;
 use GuzzleHttp\Client as GuzzleClient;
 
 final class Client implements CommunicatesWithDew
@@ -28,26 +29,24 @@ final class Client implements CommunicatesWithDew
         );
     }
 
-    /**
-     * Execute the command against the environment.
-     *
-     * @return array<string, mixed>
-     */
-    public function runCommand(int $projectId, string $environment, string $command): array
+    public function runCommand(int $projectId, string $environment, string $command): Command
     {
-        return $this->send('POST', '/api/projects/'.$projectId.'/environments/'.$environment.'/commands', [
-            'command' => $command,
-        ]);
+        $response = $this->post(
+            '/api/projects/'.$projectId.'/environments/'.$environment.'/commands',
+            ['command' => $command]
+        );
+
+        return new Command($response['data']);
     }
 
-    /**
-     * Retrieve the command invocation status.
-     *
-     * @return array<string, mixed>
-     */
-    public function getCommand(int $projectId, string $environment, int $commandId): array
+    public function getCommand(int $projectId, string $environment, string $commandId): Command
     {
-        return $this->send('GET', '/api/projects/'.$projectId.'/environments/'.$environment.'/commands/'.$commandId);
+        $response = $this->get(sprintf(
+            '/api/projects/%s/environments/%s/commands/%s',
+            $projectId, $environment, $commandId
+        ));
+
+        return new Command($response['data']);
     }
 
     /**
@@ -63,6 +62,23 @@ final class Client implements CommunicatesWithDew
         ]);
 
         return json_decode((string) $response->getBody(), associative: true);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function get(string $uri): array
+    {
+        return $this->send('GET', $uri);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function post(string $uri, array $data = []): array
+    {
+        return $this->send('POST', $uri, $data);
     }
 
     /**

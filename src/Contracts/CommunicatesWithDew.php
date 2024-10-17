@@ -2,19 +2,17 @@
 
 namespace Dew\Cli\Contracts;
 
+use Dew\Cli\Models\Command;
+
 interface CommunicatesWithDew
 {
     /**
      * Execute the command against the environment.
-     *
-     * @return array<string, mixed>
      */
-    public function runCommand(int $projectId, string $environment, string $command): array;
+    public function runCommand(int $projectId, string $environment, string $command): Command;
 
     /**
      * Retrieve the command invocation status.
-     *
-     * @return array<string, mixed>
      */
-    public function getCommand(int $projectId, string $environment, int $commandId): array;
+    public function getCommand(int $projectId, string $environment, string $commandId): Command;
 }
