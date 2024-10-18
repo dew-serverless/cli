@@ -33,7 +33,7 @@ class RunBuildSteps
      */
     protected function execute(string $command, ?string $cwd = null): void
     {
-        $process = Process::fromShellCommandLine($command, $cwd);
+        $process = Process::fromShellCommandline($command, $cwd);
 
         $process->run(function ($type, $buffer): void {
             echo $buffer;
