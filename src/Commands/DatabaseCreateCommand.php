@@ -32,7 +32,7 @@ class DatabaseCreateCommand extends Command
     {
         (new CreateDatabaseInstanceHandler($input, new SymfonyStyle($input, $output)))
             ->tokenUsing(Configuration::createFromEnvironment()->getToken())
-            ->forProject(ProjectConfig::load()->get('id'))
+            ->forProject(ProjectConfig::load()->getId())
             ->handle();
 
         return Command::SUCCESS;

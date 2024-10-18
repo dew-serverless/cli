@@ -32,7 +32,7 @@ class DatabaseDeleteCommand extends Command
 
         $action = (new DeleteDatabaseInstance)
             ->tokenUsing(Configuration::createFromEnvironment()->getToken())
-            ->forProject(ProjectConfig::load()->get('id'))
+            ->forProject(ProjectConfig::load()->getId())
             ->forInstance($input->getArgument('name') ?: $io->ask('What is the name of the database instance'));
 
         if ($io->confirm('Do you want to delete the database instance')) {

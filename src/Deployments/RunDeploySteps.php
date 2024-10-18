@@ -14,7 +14,7 @@ class RunDeploySteps
     {
         echo "Run deploy steps\n";
 
-        $config = $deployment->config->get($deployment->environment);
+        $config = $deployment->config->getEnvironment($deployment->environment);
 
         $steps = $config['deploy'] ?? [];
 
@@ -23,7 +23,7 @@ class RunDeploySteps
         }
 
         $action = (new ExecuteCommand)
-            ->forProject($deployment->config->get('id'))
+            ->forProject($deployment->config->getId())
             ->tokenUsing($deployment->token)
             ->on($deployment->environment);
 

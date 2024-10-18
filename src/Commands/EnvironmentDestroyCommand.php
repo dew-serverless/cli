@@ -29,7 +29,7 @@ class EnvironmentDestroyCommand extends Command
 
         $response = Client::make()->delete(sprintf(
             '/api/projects/%s/environments/%s',
-            $projectConfig->get('id'), $environment
+            $projectConfig->getId(), $environment
         ));
 
         if ($response->getStatusCode() >= 400) {

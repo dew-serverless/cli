@@ -28,7 +28,7 @@ class RollbackCommand extends Command
 
         $response = Client::make()
             ->post(sprintf('/api/projects/%s/environments/%s/deployments/%s/rollback',
-                $config->get('id'),
+                $config->getId(),
                 $input->getArgument('environment') ?: $io->ask('Environment name'),
                 $input->getArgument('deployment') ?: $io->ask('Deployment ID')
             ));

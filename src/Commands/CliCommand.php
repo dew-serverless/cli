@@ -29,7 +29,7 @@ class CliCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return (new ExecuteCommand(Client::make(), $output))
-            ->forProject(ProjectConfig::load()->get('id'))
+            ->forProject(ProjectConfig::load()->getId())
             ->on($input->getArgument('env'))
             ->execute($input->getArgument('cmd'));
     }

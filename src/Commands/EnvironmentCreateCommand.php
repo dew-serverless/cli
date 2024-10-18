@@ -25,7 +25,7 @@ class EnvironmentCreateCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $response = Client::make()
-            ->post(sprintf('/api/projects/%s/environments', $projectConfig->get('id')), [
+            ->post(sprintf('/api/projects/%s/environments', $projectConfig->getId()), [
                 'name' => $input->getArgument('name') ?: $io->ask('Environment name'),
             ]);
 

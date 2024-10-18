@@ -14,7 +14,7 @@ class RunBuildSteps
     {
         echo "Run build steps\n";
 
-        $config = $deployment->config->get($deployment->environment);
+        $config = $deployment->config->getEnvironment($deployment->environment);
         $steps = $config['build'] ?? [];
 
         if (empty($steps)) {
