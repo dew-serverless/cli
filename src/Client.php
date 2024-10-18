@@ -55,9 +55,8 @@ final class Client implements CommunicatesWithDew
      * Send the HTTP request to Dew server.
      *
      * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
      */
-    public function send(string $method, string $uri, array $data = []): array
+    public function send(string $method, string $uri, array $data = []): mixed
     {
         $placement = $method === 'GET' ? 'query' : 'json';
 
@@ -70,27 +69,24 @@ final class Client implements CommunicatesWithDew
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
      */
-    public function get(string $uri, array $data = []): array
+    public function get(string $uri, array $data = []): mixed
     {
         return $this->send('GET', $uri, $data);
     }
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
      */
-    public function post(string $uri, array $data = []): array
+    public function post(string $uri, array $data = []): mixed
     {
         return $this->send('POST', $uri, $data);
     }
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
      */
-    public function delete(string $uri, array $data = []): array
+    public function delete(string $uri, array $data = []): mixed
     {
         return $this->send('DELETE', $uri, $data);
     }
