@@ -39,7 +39,8 @@
         }
     },
     "scripts": {
-        "lint": "phpstan analyse"
+        "lint": "phpstan analyse",
+        "test": "pest"
     },
     "bin": ["dew"],
     "minimum-stability": "stable",
