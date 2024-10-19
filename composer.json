@@ -38,6 +38,9 @@
             "Dew\\Cli\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "lint": "phpstan analyse"
+    },
     "bin": ["dew"],
     "minimum-stability": "stable",
     "prefer-stable": true,
