@@ -9,6 +9,8 @@ class SubscriptionType
 
     /**
      * Retrieve all the possible values.
+     *
+     * @return string[]
      */
     public static function all(): array
     {

@@ -34,6 +34,8 @@ class Deployment
 
     /**
      * Context of the deployment.
+     *
+     * @var array<string, mixed>
      */
     public array $context;
 
@@ -97,6 +99,8 @@ class Deployment
 
     /**
      * Configure deployment context.
+     *
+     * @param  array<string, mixed>  $context
      */
     public function contextUsing(array $context): self
     {
@@ -121,7 +125,7 @@ class Deployment
         }, $this);
     }
 
-    public function appDir()
+    public function appDir(): string
     {
         return $this->appDir;
     }
@@ -144,17 +148,17 @@ class Deployment
         return $this->publicPath;
     }
 
-    public function buildDir()
+    public function buildDir(): string
     {
         return Path::join($this->appDir(), '.dew', 'build');
     }
 
-    public function zipName()
+    public function zipName(): string
     {
         return 'build.zip';
     }
 
-    public function zipPath()
+    public function zipPath(): string
     {
         return Path::join($this->appDir(), '.dew', $this->zipName());
     }

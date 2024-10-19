@@ -37,6 +37,8 @@ abstract class CreateDatabaseInstance
 
     /**
      * Create database instance.
+     *
+     * @return array<string, mixed>
      */
     public function create(): array
     {
@@ -47,6 +49,8 @@ abstract class CreateDatabaseInstance
 
     /**
      * Represent as database creation request.
+     *
+     * @return array<string, mixed>
      */
     protected function toAcsRequest(): array
     {

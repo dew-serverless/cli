@@ -30,7 +30,7 @@ class CopyFilesToBuildDirectory
         return $deployment;
     }
 
-    protected function files()
+    protected function files(): Finder
     {
         return (new Finder)
             ->ignoreDotFiles(true)

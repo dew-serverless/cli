@@ -26,11 +26,15 @@ interface InstanceQuotation
 
     /**
      * Get the list of promotion rules.
+     *
+     * @return \Dew\Cli\Contracts\Promotion[]
      */
     public function getPromotion(): array;
 
     /**
      * Get the list of coupons;
+     *
+     * @return \Dew\Cli\Contracts\Coupon[]
      */
     public function getCoupons(): array;
 }

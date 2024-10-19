@@ -100,6 +100,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Get available zones by current setup.
+     *
+     * @return array<string, mixed>
      */
     protected function getAvailableZones(): array
     {
@@ -113,6 +115,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Get available classes by current setup.
+     *
+     * @return array<string, mixed>
      */
     protected function getAvailableClasses(): array
     {
@@ -128,6 +132,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Make a new instance quotation by given response.
+     *
+     * @param  array<string, mixed>  $response
      */
     protected function newInstanceQuotation(array $response): InstanceQuotation
     {
@@ -148,13 +154,13 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
         $quotation = $this->newInstanceQuotation($response);
 
         $quotation->setPromotion(
-            collect($response['Rules']['Rule'] ?? [])
-                ->map(fn ($rule) => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description'] ?? ''))
+            collect($response['Rules']['Rule'])
+                ->map(fn ($rule) => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description']))
                 ->all()
         );
 
         $quotation->setCoupons(
-            collect($response['PriceInfo']['Coupons']['Coupon'] ?? [])
+            collect($response['PriceInfo']['Coupons']['Coupon'])
                 ->map(fn ($coupon) => new Coupon($coupon['CouponNo'], $coupon['Name'], $coupon['Description'], $coupon['IsSelected'] === 'true'))
                 ->all()
         );
@@ -164,6 +170,26 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Request quotation from API.
+     *
+     * @return array{
+     *   PriceInfo: array{
+     *     Coupons: array{
+     *       Coupon: array{
+     *         CouponNo: string,
+     *         Description: string,
+     *         IsSelected: string,
+     *         Name: string
+     *       }[]
+     *     }
+     *   },
+     *   Rules: array{
+     *     Rule: array{
+     *       Description: string,
+     *       Name: string,
+     *       RuleId: int
+     *     }[]
+     *   }
+     * }
      */
     protected function requestQuotation(): array
     {
@@ -174,6 +200,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Represent as quotation request.
+     *
+     * @return array<string, mixed>
      */
     protected function toQuotationRequest(): array
     {

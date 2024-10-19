@@ -11,6 +11,8 @@ class Engine
 
     /**
      * Retrieve all possible values.
+     *
+     * @return string[]
      */
     public static function all(): array
     {

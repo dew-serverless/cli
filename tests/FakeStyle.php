@@ -9,21 +9,29 @@ class FakeStyle implements StyleInterface
 {
     /**
      * The collected buffer.
+     *
+     * @var string[]
      */
     protected array $buffer = [];
 
     /**
      * The collected tables.
+     *
+     * @var array<string, string[]>
      */
     protected array $tables = [];
 
     /**
      * The collected questions.
+     *
+     * @var array<string, string>
      */
     protected array $questions = [];
 
     /**
      * The collected confirmations.
+     *
+     * @var array<string, bool>
      */
     protected array $confirmations = [];
 
@@ -45,6 +53,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a list.
+     *
+     * @param  string[]  $elements
      */
     public function listing(array $elements): void
     {
@@ -53,6 +63,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats informational text.
+     *
+     * @param  string[]|string  $message
      */
     public function text(array|string $message): void
     {
@@ -61,6 +73,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a success result bar.
+     *
+     * @param  string[]|string  $message
      */
     public function success(array|string $message): void
     {
@@ -69,6 +83,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats an error result bar.
+     *
+     * @param  string[]|string  $message
      */
     public function error(array|string $message): void
     {
@@ -77,6 +93,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a warning result bar.
+     *
+     * @param  string[]|string  $message
      */
     public function warning(array|string $message): void
     {
@@ -85,6 +103,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a note admonition.
+     *
+     * @param  string[]|string  $message
      */
     public function note(array|string $message): void
     {
@@ -93,6 +113,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a caution admonition.
+     *
+     * @param  string[]|string  $message
      */
     public function caution(array|string $message): void
     {
@@ -101,6 +123,9 @@ class FakeStyle implements StyleInterface
 
     /**
      * Formats a table.
+     *
+     * @param  string[]  $headers
+     * @param  string[][]  $rows
      */
     public function table(array $headers, array $rows): void
     {
@@ -145,6 +170,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Asks a choice question.
+     *
+     * @param  string[]  $choices
      */
     public function choice(string $question, array $choices, mixed $default = null): mixed
     {
@@ -187,6 +214,8 @@ class FakeStyle implements StyleInterface
 
     /**
      * Assert buffer contains the given messages.
+     *
+     * @param  string[]|string  $messages
      */
     protected function assertBufferHas(array|string $messages): void
     {
@@ -209,6 +238,9 @@ class FakeStyle implements StyleInterface
 
     /**
      * Collect a table.
+     *
+     * @param  string[]  $headers
+     * @param  mixed[][]  $rows
      */
     public function expectsTable(array $headers, array $rows): self
     {

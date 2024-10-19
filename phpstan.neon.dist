@@ -2,13 +2,9 @@ includes:
     - vendor/phpstan/phpstan-mockery/extension.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
         - tests
     ignoreErrors:
-        -
-            message: '#Undefined variable: \$this#'
-            path: tests/*
-
         - '#^Access to an undefined property Illuminate\\Support\\HigherOrderCollectionProxy::\$[a-zA-Z0-9\\_]+.$#'

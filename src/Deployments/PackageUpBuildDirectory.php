@@ -34,7 +34,7 @@ class PackageUpBuildDirectory
         return $deployment;
     }
 
-    public function files()
+    public function files(): Finder
     {
         return (new Finder)->ignoreDotFiles(false);
     }

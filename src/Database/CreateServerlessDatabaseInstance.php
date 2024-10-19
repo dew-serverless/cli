@@ -46,6 +46,8 @@ class CreateServerlessDatabaseInstance extends CreateDatabaseInstance
 
     /**
      * Represent as database creation request.
+     *
+     * @return array<string, mixed>
      */
     protected function toAcsRequest(): array
     {
