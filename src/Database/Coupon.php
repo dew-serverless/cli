@@ -10,7 +10,7 @@ class Coupon implements CouponContract
         protected string $number,
         protected string $name,
         protected string $description,
-        protected int $isSelected
+        protected bool $isSelected
     ) {
         //
     }
