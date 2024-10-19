@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dew\Cli\Models;
 
 /**
+ * @property string $id
  * @property string $input
  * @property int $status
  * @property string|null $command_line

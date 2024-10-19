@@ -1,5 +1,5 @@
 parameters:
-    level: 1
+    level: 2
     paths:
         - src
         - tests
@@ -7,3 +7,5 @@ parameters:
         -
             message: '#Undefined variable: \$this#'
             path: tests/*
+
+        - '#^Access to an undefined property Illuminate\\Support\\HigherOrderCollectionProxy::\$[a-zA-Z0-9\\_]+.$#'

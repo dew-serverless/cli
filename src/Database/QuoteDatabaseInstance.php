@@ -2,29 +2,20 @@
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Client;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Contracts\DatabaseInstanceQuoter;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation as QuotationContract;
-use Dew\Cli\InteractsWithDew;
 
 abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 {
-    use InteractsWithDew, ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
+    use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
 
-    /**
-     * The project ID.
-     */
-    public int $projectId;
-
-    /**
-     * Configure project ID.
-     */
-    public function forProject(int $projectId): self
-    {
-        $this->projectId = $projectId;
-
-        return $this;
+    public function __construct(
+        private CommunicatesWithDew $client,
+        private int $projectId
+    ) {
+        //
     }
 
     /**
@@ -112,15 +103,12 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function getAvailableZones(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/available-zones', [
-                'type' => $this->type(),
-                'engine' => $this->engine,
-                'engine_version' => $this->engineVersion ?? null,
-                'deployment' => $this->deployment ?? null,
-            ]);
-
-        return $response['data'];
+        return $this->client->getAvailableDatabaseZones($this->projectId, [
+            'type' => $this->type(),
+            'engine' => $this->engine,
+            'engine_version' => $this->engineVersion ?? null,
+            'deployment' => $this->deployment ?? null,
+        ])['data'];
     }
 
     /**
@@ -128,17 +116,14 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function getAvailableClasses(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/available-specs', [
-                'type' => $this->type(),
-                'zone' => $this->zoneId,
-                'engine' => $this->engine,
-                'engine_version' => $this->engineVersion,
-                'deployment' => $this->deployment,
-                'storage_type' => $this->storageType,
-            ]);
-
-        return $response['data'];
+        return $this->client->getAvailableDatabaseClasses($this->projectId, [
+            'type' => $this->type(),
+            'zone' => $this->zoneId,
+            'engine' => $this->engine,
+            'engine_version' => $this->engineVersion,
+            'deployment' => $this->deployment,
+            'storage_type' => $this->storageType,
+        ])['data'];
     }
 
     /**
@@ -182,10 +167,9 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      */
     protected function requestQuotation(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/quotation', $this->toQuotationRequest());
-
-        return $response['data'];
+        return $this->client->getDatabaseQuotation(
+            $this->projectId, $this->toQuotationRequest()
+        )['data'];
     }
 
     /**

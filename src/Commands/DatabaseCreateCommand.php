@@ -2,7 +2,7 @@
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Configuration;
+use Dew\Cli\Client;
 use Dew\Cli\Database\CreateDatabaseInstanceHandler;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +31,7 @@ class DatabaseCreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         (new CreateDatabaseInstanceHandler($input, new SymfonyStyle($input, $output)))
-            ->tokenUsing(Configuration::createFromEnvironment()->getToken())
+            ->clientUsing(Client::make())
             ->forProject(ProjectConfig::load()->getId())
             ->handle();
 

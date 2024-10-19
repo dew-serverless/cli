@@ -1,5 +1,6 @@
 <?php
 
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Database\CreateDatabaseInstanceHandler;
 use Dew\Cli\Tests\FakeStyle;
 use Dew\Cli\Tests\Fixtures\StubMySqlDatabaseInstanceQuoter;
@@ -29,9 +30,9 @@ test('pay-as-you-go database instance creation', function () {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->tokenUsing('testing')
+        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
         ->forProject(9999)
-        ->quoterUsing(new StubMySqlDatabaseInstanceQuoter)
+        ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makePayAsYouGo())
         ->handle();
 });
 
@@ -60,9 +61,9 @@ test('subscription database instance creation', function () {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->tokenUsing('testing')
+        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
         ->forProject(9999)
-        ->quoterUsing(new StubMySqlDatabaseInstanceQuoter)
+        ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makeSubscription())
         ->handle();
 });
 
@@ -93,9 +94,9 @@ test('serverless database instance creation', function () {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->tokenUsing('testing')
+        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
         ->forProject(9999)
-        ->quoterUsing(new StubMySqlServerlessDatabaseInstanceQuoter)
+        ->quoterUsing(StubMySqlServerlessDatabaseInstanceQuoter::make())
         ->handle();
 });
 
@@ -107,9 +108,9 @@ test('unsupported database instance creation', function () {
         ->expectsQuestion('What kind of instance do you want to setup', 'free');
 
     $handler = (new CreateDatabaseInstanceHandler($input, $io))
-        ->tokenUsing('testing')
+        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
         ->forProject(9999)
-        ->quoterUsing(new StubMySqlDatabaseInstanceQuoter);
+        ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makePayAsYouGo());
 
     expect(fn () => $handler->handle())
         ->toThrow(InvalidArgumentException::class, 'Unsupported database instance type.');
