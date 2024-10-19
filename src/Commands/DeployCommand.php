@@ -29,7 +29,8 @@ class DeployCommand extends Command
             ->usePublicPath('/public')
             ->tokenUsing(Configuration::createFromEnvironment()->getToken())
             ->configUsing(ProjectConfig::load())
-            ->forEnvironment($input->getArgument('environment') ?: $io->ask('Environment name'));
+            ->forEnvironment($input->getArgument('environment') ?: $io->ask('Environment name'))
+            ->outputUsing($output);
 
         try {
             $deployment->handle();

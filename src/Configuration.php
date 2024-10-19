@@ -2,7 +2,7 @@
 
 namespace Dew\Cli;
 
-class Configuration
+final class Configuration
 {
     public function __construct(
         protected string $path

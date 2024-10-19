@@ -11,6 +11,7 @@ use Dew\Cli\Deployments\RunBuildSteps;
 use Dew\Cli\Deployments\RunDeploySteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 
 class Deployment
@@ -45,6 +46,8 @@ class Deployment
      * Name of the environment.
      */
     public string $environment;
+
+    public ?OutputInterface $output;
 
     /**
      * Project configuration.
@@ -98,6 +101,13 @@ class Deployment
     public function contextUsing(array $context): self
     {
         $this->context = $context;
+
+        return $this;
+    }
+
+    public function outputUsing(OutputInterface $output): self
+    {
+        $this->output = $output;
 
         return $this;
     }

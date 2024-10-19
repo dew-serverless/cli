@@ -24,7 +24,7 @@ final class ExecuteCommand
      */
     public function __construct(
         private CommunicatesWithDew $dew,
-        private OutputInterface $output
+        private ?OutputInterface $output = null
     ) {
         //
     }
@@ -62,7 +62,7 @@ final class ExecuteCommand
             $invocation = $this->get($invocation->id);
         }
 
-        $this->output->writeln($invocation->output);
+        $this->output?->writeln($invocation->output);
 
         return $invocation->exit_code ?? Command::SUCCESS;
     }

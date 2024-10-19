@@ -2,6 +2,7 @@
 
 namespace Dew\Cli\Deployments;
 
+use Dew\Cli\Client;
 use Dew\Cli\Deployment;
 use Dew\Cli\ExecuteCommand;
 
@@ -22,15 +23,16 @@ class RunDeploySteps
             return $deployment;
         }
 
-        $action = (new ExecuteCommand)
+        $client = Client::make([
+            'token' => $deployment->token,
+        ]);
+
+        $action = (new ExecuteCommand($client, $deployment->output))
             ->forProject($deployment->config->getId())
-            ->tokenUsing($deployment->token)
             ->on($deployment->environment);
 
         foreach ($steps as $command) {
-            $response = $action->execute($command);
-
-            echo $response['data']['output'];
+            $action->execute($command);
         }
 
         return $deployment;
