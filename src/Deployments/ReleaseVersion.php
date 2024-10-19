@@ -11,12 +11,8 @@ class ReleaseVersion
     {
         echo "Release a new version\n";
 
-        Client::make()->post($deployment->context['callback'], [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => sprintf('Bearer %s', $deployment->token),
-            ],
-        ]);
+        Client::make(['token' => $deployment->token])
+            ->post($deployment->context['callback']);
 
         return $deployment;
     }

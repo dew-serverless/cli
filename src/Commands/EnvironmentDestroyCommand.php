@@ -28,13 +28,9 @@ class EnvironmentDestroyCommand extends Command
         $environment = $input->getArgument('name') ?: $io->ask('Environment name');
 
         $response = Client::make()->delete(sprintf(
-            '/api/projects/%s/environments/%s', $projectConfig->get('id'), $environment
-        ), [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => sprintf('Bearer %s', $token),
-            ],
-        ]);
+            '/api/projects/%s/environments/%s',
+            $projectConfig->getId(), $environment
+        ));
 
         if ($response->getStatusCode() >= 400) {
             $io->error('Could not destroy the environment.');

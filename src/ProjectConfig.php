@@ -6,24 +6,42 @@ use Symfony\Component\Yaml\Yaml;
 
 class ProjectConfig
 {
+    /**
+     * @var array<string, mixed>
+     */
+    private array $config;
+
     public function __construct(
-        protected array $config
+        private string $contents
     ) {
-        //
+        $this->config = Yaml::parse($this->contents);
     }
 
     public static function load(): static
     {
-        $config = Yaml::parse(file_get_contents(getcwd().'/dew.yaml'));
+        $contents = file_get_contents(getcwd().'/dew.yaml');
 
-        return new static($config);
+        return new static($contents);
     }
 
     /**
-     * Retrieve the value of configuration item.
+     * The project ID.
      */
-    public function get(string $item, mixed $default = null): mixed
+    public function getId(): int
     {
-        return $this->config[$item] ?? $default;
+        return $this->config['id'];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getEnvironment(string $name): array
+    {
+        return $this->config['environments'][$name];
+    }
+
+    public function getRaw(): string
+    {
+        return $this->contents;
     }
 }

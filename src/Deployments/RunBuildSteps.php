@@ -14,7 +14,7 @@ class RunBuildSteps
     {
         echo "Run build steps\n";
 
-        $config = $deployment->config->get($deployment->environment);
+        $config = $deployment->config->getEnvironment($deployment->environment);
         $steps = $config['build'] ?? [];
 
         if (empty($steps)) {
@@ -33,7 +33,7 @@ class RunBuildSteps
      */
     protected function execute(string $command, ?string $cwd = null): void
     {
-        $process = Process::fromShellCommandLine($command, $cwd);
+        $process = Process::fromShellCommandline($command, $cwd);
 
         $process->run(function ($type, $buffer): void {
             echo $buffer;

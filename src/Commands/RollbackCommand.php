@@ -3,7 +3,6 @@
 namespace Dew\Cli\Commands;
 
 use Dew\Cli\Client;
-use Dew\Cli\Configuration;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -29,17 +28,10 @@ class RollbackCommand extends Command
 
         $response = Client::make()
             ->post(sprintf('/api/projects/%s/environments/%s/deployments/%s/rollback',
-                $config->get('id'),
+                $config->getId(),
                 $input->getArgument('environment') ?: $io->ask('Environment name'),
                 $input->getArgument('deployment') ?: $io->ask('Deployment ID')
-            ), [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s',
-                        Configuration::createFromEnvironment()->getToken()
-                    ),
-                ],
-            ]);
+            ));
 
         if ($response->getStatusCode() >= 400) {
             $io->error('Failed to rollback the deployment.');

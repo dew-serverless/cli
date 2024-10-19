@@ -2,7 +2,7 @@
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Configuration;
+use Dew\Cli\Client;
 use Dew\Cli\ExecuteCommand;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -28,16 +28,9 @@ class CliCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $response = (new ExecuteCommand)
-            ->forProject(ProjectConfig::load()->get('id'))
-            ->tokenUsing(Configuration::createFromEnvironment()->getToken())
+        return (new ExecuteCommand(Client::make(), $output))
+            ->forProject(ProjectConfig::load()->getId())
             ->on($input->getArgument('env'))
             ->execute($input->getArgument('cmd'));
-
-        $data = $response['data'];
-
-        $output->write($data['output']);
-
-        return $data['status'] ?? Command::SUCCESS;
     }
 }

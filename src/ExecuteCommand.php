@@ -2,10 +2,13 @@
 
 namespace Dew\Cli;
 
-class ExecuteCommand
-{
-    use InteractsWithDew;
+use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Models\Command as Model;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 
+final class ExecuteCommand
+{
     /**
      * The project ID.
      */
@@ -15,6 +18,16 @@ class ExecuteCommand
      * The execution environment.
      */
     public string $environment;
+
+    /**
+     * Create a new execute command action.
+     */
+    public function __construct(
+        private CommunicatesWithDew $dew,
+        private OutputInterface $output
+    ) {
+        //
+    }
 
     /**
      * Configure project ID.
@@ -39,19 +52,28 @@ class ExecuteCommand
     /**
      * Execute the given command.
      */
-    public function execute(string $command): array
+    public function execute(string $command): int
     {
-        $response = Client::make()
-            ->post('/api/projects/'.$this->projectId.'/environments/'.$this->environment.'/cli', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => sprintf('Bearer %s', $this->token),
-                ],
-                'json' => [
-                    'command' => $command,
-                ],
-            ]);
+        $invocation = $this->run($command);
 
-        return json_decode($response->getBody()->getContents(), associative: true);
+        while ($invocation->isRunning()) {
+            sleep(1);
+
+            $invocation = $this->get($invocation->id);
+        }
+
+        $this->output->writeln($invocation->output);
+
+        return $invocation->exit_code ?? Command::SUCCESS;
+    }
+
+    private function run(string $command): Model
+    {
+        return $this->dew->runCommand($this->projectId, $this->environment, $command);
+    }
+
+    private function get(string $commandId): Model
+    {
+        return $this->dew->getCommand($this->projectId, $this->environment, $commandId);
     }
 }
