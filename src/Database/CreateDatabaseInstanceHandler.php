@@ -284,7 +284,7 @@ class CreateDatabaseInstanceHandler
      */
     protected function configureStorage(): self
     {
-        $storage = $this->askStorage();
+        $storage = (int) $this->askStorage();
 
         $this->builder()->storage($storage);
         $this->quoter()->storage($storage);
