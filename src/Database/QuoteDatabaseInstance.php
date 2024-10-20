@@ -29,9 +29,9 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableEngineVersions(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->map->version
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->map->Version
             ->unique()
             ->all();
     }
@@ -42,10 +42,10 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableDeploymentOptions(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->flatMap->supportedCategorys
-            ->map->category
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->flatMap->SupportedCategorys
+            ->map->Category
             ->unique()
             ->all();
     }
@@ -56,11 +56,11 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableStorageTypes(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->flatMap->supportedCategorys
-            ->flatMap->supportedStorageTypes
-            ->map->storageType
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->flatMap->SupportedCategorys
+            ->flatMap->SupportedStorageTypes
+            ->map->StorageType
             ->unique()
             ->all();
     }
@@ -71,7 +71,7 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableZones(): array
     {
         return collect($this->getAvailableZones())
-            ->map->zoneId
+            ->map->ZoneId
             ->all();
     }
 
