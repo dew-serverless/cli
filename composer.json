@@ -27,7 +27,8 @@
         "pestphp/pest": "^2.12",
         "mockery/mockery": "^1.6",
         "phpstan/phpstan": "^1.12",
-        "phpstan/phpstan-mockery": "^1.1"
+        "phpstan/phpstan-mockery": "^1.1",
+        "rector/rector": "^1.2"
     },
     "autoload": {
         "psr-4": {
