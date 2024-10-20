@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
@@ -47,7 +49,7 @@ class Deployment
      */
     public string $environment;
 
-    public ?OutputInterface $output;
+    public ?OutputInterface $output = null;
 
     /**
      * Project configuration.

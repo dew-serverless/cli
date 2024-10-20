@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Database;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
@@ -547,13 +549,13 @@ class CreateDatabaseInstanceHandler
     {
         $promotion = $quotation->getPromotion();
 
-        if (count($promotion) === 0) {
+        if ($promotion === []) {
             return $this;
         }
 
         $this->io->table(
             ['ID', 'Promotion'],
-            array_map(fn ($rule) => [$rule->id(), $rule->name()], $promotion),
+            array_map(fn ($rule): array => [$rule->id(), $rule->name()], $promotion),
         );
 
         return $this;
@@ -566,13 +568,13 @@ class CreateDatabaseInstanceHandler
     {
         $coupons = $quotation->getCoupons();
 
-        if (count($coupons) === 0) {
+        if ($coupons === []) {
             return $this;
         }
 
         $this->io->table(
             ['Selected', 'No.', 'Coupon', 'Description'],
-            array_map(fn ($coupon) => [
+            array_map(fn ($coupon): array => [
                 $coupon->isSelected(),
                 $coupon->number(),
                 $coupon->name(),

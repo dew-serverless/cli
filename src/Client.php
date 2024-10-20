@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Tests\Fixtures;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
@@ -17,7 +19,7 @@ final class StubMySqlServerlessDatabaseInstanceQuoter extends QuoteDatabaseInsta
 
     public static function make(): static
     {
-        return new static(Mockery::mock(CommunicatesWithDew::class), 1);
+        return new self(Mockery::mock(CommunicatesWithDew::class), 1);
     }
 
     public function type(): string

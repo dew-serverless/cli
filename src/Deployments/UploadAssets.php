@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Deployments;
 
 use Dew\Cli\Deployment;
@@ -34,7 +36,7 @@ class UploadAssets
             $oss->uploadFile(
                 $deployment->context['asset_bucket'],
                 Path::join($deployment->context['uuid'], $relativePath, $file->getFilename()),
-                $file
+                $file->getRealPath()
             );
         }
 

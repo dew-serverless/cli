@@ -30,14 +30,14 @@ abstract class Model
     public function offsetSet(int|string $offset, mixed $value): void
     {
         throw new RuntimeException(sprintf(
-            'The %s model is immutable.', get_called_class()
+            'The %s model is immutable.', static::class
         ));
     }
 
     public function offsetUnset(int|string $offset): void
     {
         throw new RuntimeException(sprintf(
-            'The %s model is immutable.', get_called_class()
+            'The %s model is immutable.', static::class
         ));
     }
 
