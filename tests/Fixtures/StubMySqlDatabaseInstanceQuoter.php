@@ -2,18 +2,44 @@
 
 namespace Dew\Cli\Tests\Fixtures;
 
-use Dew\Cli\Contracts\DatabaseInstanceQuoter;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation;
-use Dew\Cli\Database\ManagesDatabaseInstanceNetwork;
-use Dew\Cli\Database\ManagesDatabaseInstance;
+use Dew\Cli\Database\InstanceType;
 use Dew\Cli\Database\ManagesSubscriptionTerm;
+use Dew\Cli\Database\QuoteDatabaseInstance;
 use Dew\Cli\Database\StorageRange;
+use Mockery;
 
-class StubMySqlDatabaseInstanceQuoter implements DatabaseInstanceQuoter
+final class StubMySqlDatabaseInstanceQuoter extends QuoteDatabaseInstance
 {
-    use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
     use ManagesSubscriptionTerm;
+
+    private string $type;
+
+    public static function makePayAsYouGo(): static
+    {
+        return (new static(Mockery::mock(CommunicatesWithDew::class), 1))
+            ->setType(InstanceType::PAY_AS_YOU_GO);
+    }
+
+    public static function makeSubscription(): static
+    {
+        return (new static(Mockery::mock(CommunicatesWithDew::class), 1))
+            ->setType(InstanceType::SUBSCRIPTION);
+    }
+
+    public function type(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
 
     public function availableEngineVersions(): array
     {

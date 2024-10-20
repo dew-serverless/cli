@@ -11,7 +11,7 @@ class PackageUpBuildDirectory
 {
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Package up build directory\n";
+        $deployment->output?->writeln('Archive source code');
 
         $files = $this->files()->in($deployment->buildDir());
 
@@ -34,7 +34,7 @@ class PackageUpBuildDirectory
         return $deployment;
     }
 
-    public function files()
+    public function files(): Finder
     {
         return (new Finder)->ignoreDotFiles(false);
     }

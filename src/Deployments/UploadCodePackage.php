@@ -9,7 +9,7 @@ class UploadCodePackage
 {
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Upload the code package\n";
+        $deployment->output?->writeln('Upload code package');
 
         $oss = new OssClient(
             $deployment->context['credentials']['access_key_id'],

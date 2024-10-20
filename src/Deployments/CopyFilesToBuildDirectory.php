@@ -11,7 +11,7 @@ class CopyFilesToBuildDirectory
 {
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Copying files to build directory\n";
+        $deployment->output?->writeln('Copy application files');
 
         $filesystem = new Filesystem;
         $files = $this->files()->in($deployment->appDir());
@@ -30,7 +30,7 @@ class CopyFilesToBuildDirectory
         return $deployment;
     }
 
-    protected function files()
+    protected function files(): Finder
     {
         return (new Finder)
             ->ignoreDotFiles(true)

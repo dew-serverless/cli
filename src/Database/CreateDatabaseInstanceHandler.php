@@ -2,24 +2,24 @@
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Contracts\DatabaseInstanceQuoter;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Contracts\InstanceQuotation;
 use Dew\Cli\Contracts\ServerlessInstanceQuotation;
-use Dew\Cli\InteractsWithDew;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 
 class CreateDatabaseInstanceHandler
 {
-    use InteractsWithDew;
-
     /**
      * The project ID.
      */
     public int $projectId;
+
+    private CommunicatesWithDew $client;
 
     /**
      * The database instance builder.
@@ -29,7 +29,7 @@ class CreateDatabaseInstanceHandler
     /**
      * The database instance quoter.
      */
-    protected DatabaseInstanceQuoter $quoter;
+    protected QuoteDatabaseInstance $quoter;
 
     /**
      * The database instance type.
@@ -49,6 +49,13 @@ class CreateDatabaseInstanceHandler
     public function forProject(int $projectId): self
     {
         $this->projectId = $projectId;
+
+        return $this;
+    }
+
+    public function clientUsing(CommunicatesWithDew $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }
@@ -277,7 +284,7 @@ class CreateDatabaseInstanceHandler
      */
     protected function configureStorage(): self
     {
-        $storage = $this->askStorage();
+        $storage = (int) $this->askStorage();
 
         $this->builder()->storage($storage);
         $this->quoter()->storage($storage);
@@ -302,16 +309,33 @@ class CreateDatabaseInstanceHandler
     /**
      * Configure subscription database instance.
      */
-    protected function configureSubscriptionInstance(): void
+    private function configureSubscriptionInstance(): void
     {
         $this->configureSubscriptionTerm();
     }
 
     /**
+     * @phpstan-assert \Dew\Cli\Database\ManagesSubscriptionTerm $this->builder()
+     * @phpstan-assert \Dew\Cli\Database\ManagesSubscriptionTerm $this->quoter()
+     */
+    private function ensureIsSubscriptionBuilder(): void
+    {
+        if (! in_array(ManagesSubscriptionTerm::class, class_uses($this->builder()))) {
+            throw new RuntimeException('The builder is not available for subscription database.');
+        }
+
+        if (! in_array(ManagesSubscriptionTerm::class, class_uses($this->quoter()))) {
+            throw new RuntimeException('The quoter is not available for subscription database.');
+        }
+    }
+
+    /**
      * Configure instance subscription term.
      */
-    protected function configureSubscriptionTerm(): self
+    private function configureSubscriptionTerm(): self
     {
+        $this->ensureIsSubscriptionBuilder();
+
         $type = $this->askSubscriptionType();
         $term = $this->askSubscriptionTerm($type);
 
@@ -352,10 +376,27 @@ class CreateDatabaseInstanceHandler
     }
 
     /**
+     * @phpstan-assert \Dew\Cli\Database\ManagesServerlessScales $this->builder()
+     * @phpstan-assert \Dew\Cli\Database\ManagesServerlessScales $this->quoter()
+     */
+    private function ensureIsServerlessBuilder(): void
+    {
+        if (! in_array(ManagesServerlessScales::class, class_uses($this->builder()))) {
+            throw new RuntimeException('The builder is not available for serverless database.');
+        }
+
+        if (! in_array(ManagesServerlessScales::class, class_uses($this->quoter()))) {
+            throw new RuntimeException('The quoter is not available for serverless database.');
+        }
+    }
+
+    /**
      * Configure serverless database instance scaling range.
      */
-    protected function configureServerlessScale(): self
+    private function configureServerlessScale(): self
     {
+        $this->ensureIsServerlessBuilder();
+
         [$min, $max] = [$this->askServerlessScaleMin(), $this->askServerlessScaleMax()];
 
         $this->builder()->scales($min, $max);
@@ -367,8 +408,10 @@ class CreateDatabaseInstanceHandler
     /**
      * Configure serverless database instance features.
      */
-    protected function configureServerlessFeatures(): self
+    private function configureServerlessFeatures(): self
     {
+        $this->ensureIsServerlessBuilder();
+
         $this->builder()->autoPause($this->askServerlessAutoPause());
         $this->builder()->forceScale($this->askServerlessScalingPolicy());
 
@@ -456,8 +499,10 @@ class CreateDatabaseInstanceHandler
     /**
      * Show the quotation section for subscription instance.
      */
-    protected function showQuotationSectionForSubscriptionInstance(InstanceQuotation $quotation): self
+    private function showQuotationSectionForSubscriptionInstance(InstanceQuotation $quotation): self
     {
+        $this->ensureIsSubscriptionBuilder();
+
         $this->io->table(
             ['Currency', 'Original', 'Discount', 'Trade'],
             [[
@@ -517,7 +562,7 @@ class CreateDatabaseInstanceHandler
     /**
      * Show the coupon section.
      */
-    protected function showCouponSection(InstanceQuotation $quotation): self
+    private function showCouponSection(InstanceQuotation $quotation): self
     {
         $coupons = $quotation->getCoupons();
 
@@ -539,45 +584,32 @@ class CreateDatabaseInstanceHandler
     }
 
     /**
-     * Resolve database instance builder by the given instance type.
-     */
-    protected function resolveBuilder(string $type): CreateDatabaseInstance
-    {
-        return match ($type) {
-            InstanceType::PAY_AS_YOU_GO => new CreatePayAsYouGoDatabaseInstance,
-            InstanceType::SUBSCRIPTION => new CreateSubscriptionDatabaseInstance,
-            InstanceType::SERVERLESS => new CreateServerlessDatabaseInstance,
-            default => throw new InvalidArgumentException('Unsupported database instance type.'),
-        };
-    }
-
-    /**
      * Resolves database instance quoter.
      */
-    protected function quoter(): DatabaseInstanceQuoter
+    private function quoter(): QuoteDatabaseInstance
     {
-        return $this->quoter ??= $this->resolveQuoter($this->type)
-            ->tokenUsing($this->token)
-            ->forProject($this->projectId);
+        return $this->quoter ??= $this->resolveQuoter($this->type);
     }
 
     /**
      * Resolve database instance quoter by given instance type.
      */
-    protected function resolveQuoter(string $type): QuoteDatabaseInstance
+    private function resolveQuoter(string $type): QuoteDatabaseInstance
     {
-        return match ($type) {
-            InstanceType::PAY_AS_YOU_GO => new QuotePayAsYouGoDatabaseInstance,
-            InstanceType::SUBSCRIPTION => new QuoteSubscriptionDatabaseInstance,
-            InstanceType::SERVERLESS => new QuoteServerlessDatabaseInstance,
+        $class = match ($type) {
+            InstanceType::PAY_AS_YOU_GO => QuotePayAsYouGoDatabaseInstance::class,
+            InstanceType::SUBSCRIPTION => QuoteSubscriptionDatabaseInstance::class,
+            InstanceType::SERVERLESS => QuoteServerlessDatabaseInstance::class,
             default => throw new InvalidArgumentException('Unsupported database instance type.'),
         };
+
+        return new $class($this->client, $this->projectId);
     }
 
     /**
      * Configure database instance quoter.
      */
-    public function quoterUsing(DatabaseInstanceQuoter $quoter): self
+    public function quoterUsing(QuoteDatabaseInstance $quoter): self
     {
         $this->quoter = $quoter;
 
@@ -587,10 +619,23 @@ class CreateDatabaseInstanceHandler
     /**
      * Resolves database instance builder.
      */
-    protected function builder(): CreateDatabaseInstance
+    private function builder(): CreateDatabaseInstance
     {
-        return $this->builder ??= $this->resolveBuilder($this->type)
-            ->tokenUsing($this->token)
-            ->forProject($this->projectId);
+        return $this->builder ??= $this->resolveBuilder($this->type);
+    }
+
+    /**
+     * Resolve database instance builder by the given instance type.
+     */
+    private function resolveBuilder(string $type): CreateDatabaseInstance
+    {
+        $class = match ($type) {
+            InstanceType::PAY_AS_YOU_GO => CreatePayAsYouGoDatabaseInstance::class,
+            InstanceType::SUBSCRIPTION => CreateSubscriptionDatabaseInstance::class,
+            InstanceType::SERVERLESS => CreateServerlessDatabaseInstance::class,
+            default => throw new InvalidArgumentException('Unsupported database instance type.'),
+        };
+
+        return new $class($this->client, $this->projectId);
     }
 }

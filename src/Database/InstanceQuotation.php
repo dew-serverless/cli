@@ -8,11 +8,15 @@ class InstanceQuotation implements QuotationContract
 {
     /**
      * The list of promotion rules.
+     *
+     * @var \Dew\Cli\Contracts\Promotion[]
      */
     protected array $promotion = [];
 
     /**
      * The list of coupons.
+     *
+     * @var \Dew\Cli\Contracts\Coupon[]
      */
     protected array $coupons = [];
 
@@ -59,6 +63,8 @@ class InstanceQuotation implements QuotationContract
 
     /**
      * Get the list of promotion rules.
+     *
+     * @return \Dew\Cli\Contracts\Promotion[]
      */
     public function getPromotion(): array
     {
@@ -67,6 +73,8 @@ class InstanceQuotation implements QuotationContract
 
     /**
      * Set available promotion rules.
+     *
+     * @param  \Dew\Cli\Contracts\Promotion[]  $rules
      */
     public function setPromotion(array $rules): self
     {
@@ -77,6 +85,8 @@ class InstanceQuotation implements QuotationContract
 
     /**
      * Get the list of coupons.
+     *
+     * @return \Dew\Cli\Contracts\Coupon[]
      */
     public function getCoupons(): array
     {
@@ -85,6 +95,8 @@ class InstanceQuotation implements QuotationContract
 
     /**
      * Set available coupons.
+     *
+     * @param  \Dew\Cli\Contracts\Coupon[]  $coupons
      */
     public function setCoupons(array $coupons): self
     {

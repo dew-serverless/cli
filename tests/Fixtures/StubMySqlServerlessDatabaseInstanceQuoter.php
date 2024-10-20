@@ -2,18 +2,28 @@
 
 namespace Dew\Cli\Tests\Fixtures;
 
-use Dew\Cli\Contracts\DatabaseInstanceQuoter;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation;
-use Dew\Cli\Database\ManagesDatabaseInstance;
-use Dew\Cli\Database\ManagesDatabaseInstanceNetwork;
+use Dew\Cli\Database\InstanceType;
 use Dew\Cli\Database\ManagesServerlessScales;
+use Dew\Cli\Database\QuoteDatabaseInstance;
 use Dew\Cli\Database\StorageRange;
+use Mockery;
 
-class StubMySqlServerlessDatabaseInstanceQuoter implements DatabaseInstanceQuoter
+final class StubMySqlServerlessDatabaseInstanceQuoter extends QuoteDatabaseInstance
 {
-    use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
     use ManagesServerlessScales;
+
+    public static function make(): static
+    {
+        return new static(Mockery::mock(CommunicatesWithDew::class), 1);
+    }
+
+    public function type(): string
+    {
+        return InstanceType::SERVERLESS;
+    }
 
     public function availableEngineVersions(): array
     {

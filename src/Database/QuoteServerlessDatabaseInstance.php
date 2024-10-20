@@ -16,6 +16,8 @@ class QuoteServerlessDatabaseInstance extends QuoteDatabaseInstance
 
     /**
      * Make a new instance quotation by given response.
+     *
+     * @param  array<string, mixed>  $response
      */
     protected function newInstanceQuotation(array $response): InstanceQuotation
     {
@@ -32,6 +34,8 @@ class QuoteServerlessDatabaseInstance extends QuoteDatabaseInstance
 
     /**
      * Get the quotation request payload.
+     *
+     * @return array<string, mixed>
      */
     protected function toQuotationRequest(): array
     {

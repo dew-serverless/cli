@@ -2,29 +2,20 @@
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Client;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Contracts\DatabaseInstanceQuoter;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation as QuotationContract;
-use Dew\Cli\InteractsWithDew;
 
 abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 {
-    use InteractsWithDew, ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
+    use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
 
-    /**
-     * The project ID.
-     */
-    public int $projectId;
-
-    /**
-     * Configure project ID.
-     */
-    public function forProject(int $projectId): self
-    {
-        $this->projectId = $projectId;
-
-        return $this;
+    public function __construct(
+        private CommunicatesWithDew $client,
+        private int $projectId
+    ) {
+        //
     }
 
     /**
@@ -38,9 +29,9 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableEngineVersions(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->map->version
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->map->Version
             ->unique()
             ->all();
     }
@@ -51,10 +42,10 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableDeploymentOptions(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->flatMap->supportedCategorys
-            ->map->category
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->flatMap->SupportedCategorys
+            ->map->Category
             ->unique()
             ->all();
     }
@@ -65,11 +56,11 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableStorageTypes(): array
     {
         return collect($this->getAvailableZones())
-            ->flatMap->supportedEngines
-            ->flatMap->supportedEngineVersions
-            ->flatMap->supportedCategorys
-            ->flatMap->supportedStorageTypes
-            ->map->storageType
+            ->flatMap->SupportedEngines
+            ->flatMap->SupportedEngineVersions
+            ->flatMap->SupportedCategorys
+            ->flatMap->SupportedStorageTypes
+            ->map->StorageType
             ->unique()
             ->all();
     }
@@ -80,7 +71,7 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     public function availableZones(): array
     {
         return collect($this->getAvailableZones())
-            ->map->zoneId
+            ->map->ZoneId
             ->all();
     }
 
@@ -104,45 +95,45 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
         $range = $class['DBInstanceStorageRange'];
 
-        return new StorageRange($range['minValue'], $range['maxValue'], $range['step']);
+        return new StorageRange($range['MinValue'], $range['MaxValue'], $range['Step']);
     }
 
     /**
      * Get available zones by current setup.
+     *
+     * @return array<string, mixed>
      */
     protected function getAvailableZones(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/available-zones', [
-                'type' => $this->type(),
-                'engine' => $this->engine,
-                'engine_version' => $this->engineVersion ?? null,
-                'deployment' => $this->deployment ?? null,
-            ]);
-
-        return $response['data'];
+        return $this->client->getAvailableDatabaseZones($this->projectId, [
+            'type' => $this->type(),
+            'engine' => $this->engine,
+            'engine_version' => $this->engineVersion ?? null,
+            'deployment' => $this->deployment ?? null,
+        ])['data'];
     }
 
     /**
      * Get available classes by current setup.
+     *
+     * @return array<string, mixed>
      */
     protected function getAvailableClasses(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/available-specs', [
-                'type' => $this->type(),
-                'zone' => $this->zoneId,
-                'engine' => $this->engine,
-                'engine_version' => $this->engineVersion,
-                'deployment' => $this->deployment,
-                'storage_type' => $this->storageType,
-            ]);
-
-        return $response['data'];
+        return $this->client->getAvailableDatabaseClasses($this->projectId, [
+            'type' => $this->type(),
+            'zone' => $this->zoneId,
+            'engine' => $this->engine,
+            'engine_version' => $this->engineVersion,
+            'deployment' => $this->deployment,
+            'storage_type' => $this->storageType,
+        ])['data'];
     }
 
     /**
      * Make a new instance quotation by given response.
+     *
+     * @param  array<string, mixed>  $response
      */
     protected function newInstanceQuotation(array $response): InstanceQuotation
     {
@@ -163,13 +154,13 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
         $quotation = $this->newInstanceQuotation($response);
 
         $quotation->setPromotion(
-            collect($response['Rules']['Rule'] ?? [])
+            collect($response['Rules']['Rule'])
                 ->map(fn ($rule) => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description'] ?? ''))
                 ->all()
         );
 
         $quotation->setCoupons(
-            collect($response['PriceInfo']['Coupons']['Coupon'] ?? [])
+            collect($response['PriceInfo']['Coupons']['Coupon'])
                 ->map(fn ($coupon) => new Coupon($coupon['CouponNo'], $coupon['Name'], $coupon['Description'], $coupon['IsSelected'] === 'true'))
                 ->all()
         );
@@ -179,17 +170,38 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
     /**
      * Request quotation from API.
+     *
+     * @return array{
+     *   PriceInfo: array{
+     *     Coupons: array{
+     *       Coupon: array{
+     *         CouponNo: string,
+     *         Description: string,
+     *         IsSelected: string,
+     *         Name: string
+     *       }[]
+     *     }
+     *   },
+     *   Rules: array{
+     *     Rule: array{
+     *       Description?: string,
+     *       Name: string,
+     *       RuleId: int
+     *     }[]
+     *   }
+     * }
      */
     protected function requestQuotation(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->get('/api/projects/'.$this->projectId.'/databases/quotation', $this->toQuotationRequest());
-
-        return $response['data'];
+        return $this->client->getDatabaseQuotation(
+            $this->projectId, $this->toQuotationRequest()
+        )['data'];
     }
 
     /**
      * Represent as quotation request.
+     *
+     * @return array<string, mixed>
      */
     protected function toQuotationRequest(): array
     {

@@ -16,6 +16,8 @@ class QuoteSubscriptionDatabaseInstance extends QuoteDatabaseInstance
 
     /**
      * Get the quotation request payload.
+     *
+     * @return array<string, mixed>
      */
     protected function toQuotationRequest(): array
     {

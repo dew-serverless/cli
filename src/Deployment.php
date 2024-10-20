@@ -2,6 +2,7 @@
 
 namespace Dew\Cli;
 
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Deployments\CopyFilesToBuildDirectory;
 use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
@@ -11,6 +12,7 @@ use Dew\Cli\Deployments\RunBuildSteps;
 use Dew\Cli\Deployments\RunDeploySteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 
 class Deployment
@@ -31,20 +33,21 @@ class Deployment
         RunDeploySteps::class,
     ];
 
-    /**
-     * Context of the deployment.
-     */
-    public array $context;
+    public CommunicatesWithDew $client;
 
     /**
-     * Token for communicating with Dew.
+     * Context of the deployment.
+     *
+     * @var array<string, mixed>
      */
-    public string $token;
+    public array $context;
 
     /**
      * Name of the environment.
      */
     public string $environment;
+
+    public ?OutputInterface $output;
 
     /**
      * Project configuration.
@@ -62,12 +65,9 @@ class Deployment
         //
     }
 
-    /**
-     * Configure Dew token.
-     */
-    public function tokenUsing(string $token): self
+    public function clientUsing(CommunicatesWithDew $client): self
     {
-        $this->token = $token;
+        $this->client = $client;
 
         return $this;
     }
@@ -94,10 +94,19 @@ class Deployment
 
     /**
      * Configure deployment context.
+     *
+     * @param  array<string, mixed>  $context
      */
     public function contextUsing(array $context): self
     {
         $this->context = $context;
+
+        return $this;
+    }
+
+    public function outputUsing(OutputInterface $output): self
+    {
+        $this->output = $output;
 
         return $this;
     }
@@ -111,7 +120,7 @@ class Deployment
         }, $this);
     }
 
-    public function appDir()
+    public function appDir(): string
     {
         return $this->appDir;
     }
@@ -134,17 +143,17 @@ class Deployment
         return $this->publicPath;
     }
 
-    public function buildDir()
+    public function buildDir(): string
     {
         return Path::join($this->appDir(), '.dew', 'build');
     }
 
-    public function zipName()
+    public function zipName(): string
     {
         return 'build.zip';
     }
 
-    public function zipPath()
+    public function zipPath(): string
     {
         return Path::join($this->appDir(), '.dew', $this->zipName());
     }

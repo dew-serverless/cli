@@ -4,7 +4,7 @@ namespace Dew\Cli;
 
 use Symfony\Component\Yaml\Yaml;
 
-class ProjectConfig
+final class ProjectConfig
 {
     /**
      * @var array<string, mixed>

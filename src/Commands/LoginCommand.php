@@ -7,22 +7,20 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'login', description: 'Authenticate with Dew')]
 class LoginCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $helper = $this->getHelper('question');
+        $io = new SymfonyStyle($input, $output);
 
-        $question = new Question('Please enter your access token: ');
-
-        $accessToken = $helper->ask($input, $output, $question);
+        $accessToken = $io->ask('Access token of Dew');
 
         Configuration::createFromEnvironment()->setToken($accessToken);
 
-        $output->writeln('Login successfully!');
+        $io->success('Login successfully!');
 
         return Command::SUCCESS;
     }

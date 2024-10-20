@@ -9,7 +9,7 @@ class PrepareBuildDirectory
 {
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Preparing build directory\n";
+        $deployment->output?->writeln('Prepare build directory');
 
         $filesystem = new Filesystem;
 

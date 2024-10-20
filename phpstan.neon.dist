@@ -1,0 +1,10 @@
+includes:
+    - vendor/phpstan/phpstan-mockery/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        - '#^Access to an undefined property Illuminate\\Support\\HigherOrderCollectionProxy::\$[a-zA-Z0-9\\_]+.$#'

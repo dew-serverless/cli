@@ -12,7 +12,7 @@ class RunDeploySteps
      */
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Run deploy steps\n";
+        $deployment->output?->writeln('Run deploy steps');
 
         $config = $deployment->config->getEnvironment($deployment->environment);
 
@@ -22,15 +22,12 @@ class RunDeploySteps
             return $deployment;
         }
 
-        $action = (new ExecuteCommand)
+        $action = (new ExecuteCommand($deployment->client, $deployment->output))
             ->forProject($deployment->config->getId())
-            ->tokenUsing($deployment->token)
             ->on($deployment->environment);
 
         foreach ($steps as $command) {
-            $response = $action->execute($command);
-
-            echo $response['data']['output'];
+            $action->execute($command);
         }
 
         return $deployment;

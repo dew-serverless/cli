@@ -2,31 +2,22 @@
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Client;
-use Dew\Cli\InteractsWithDew;
+use Dew\Cli\Contracts\CommunicatesWithDew;
 
 abstract class CreateDatabaseInstance
 {
-    use InteractsWithDew, ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
-
-    /**
-     * The project ID.
-     */
-    public int $projectId;
+    use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
 
     /**
      * The database instance name.
      */
     public string $name;
 
-    /**
-     * Configure project ID.
-     */
-    public function forProject(int $projectId): self
-    {
-        $this->projectId = $projectId;
-
-        return $this;
+    public function __construct(
+        private CommunicatesWithDew $client,
+        private int $projectId
+    ) {
+        //
     }
 
     /**
@@ -46,17 +37,20 @@ abstract class CreateDatabaseInstance
 
     /**
      * Create database instance.
+     *
+     * @return array<string, mixed>
      */
     public function create(): array
     {
-        $response = Client::make(['token' => $this->token])
-            ->post('/api/projects/'.$this->projectId.'/databases', $this->toAcsRequest());
-
-        return $response['data'];
+        return $this->client->createDatabase(
+            $this->projectId, $this->toAcsRequest()
+        )['data'];
     }
 
     /**
      * Represent as database creation request.
+     *
+     * @return array<string, mixed>
      */
     protected function toAcsRequest(): array
     {
