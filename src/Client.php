@@ -31,6 +31,19 @@ final class Client implements CommunicatesWithDew
         );
     }
 
+    public function createDeployment(int $projectId, string $environment, array $data): array
+    {
+        return $this->post(sprintf(
+            '/api/projects/%s/environments/%s/deployments',
+            $projectId, $environment
+        ), $data);
+    }
+
+    public function pingDeploymentCallback(string $callbackUrl): void
+    {
+        $this->post($callbackUrl);
+    }
+
     public function getAvailableDatabaseZones(int $projectId, array $data): array
     {
         return $this->get(sprintf(

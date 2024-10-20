@@ -2,6 +2,7 @@
 
 namespace Dew\Cli;
 
+use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Deployments\CopyFilesToBuildDirectory;
 use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
@@ -32,17 +33,14 @@ class Deployment
         RunDeploySteps::class,
     ];
 
+    public CommunicatesWithDew $client;
+
     /**
      * Context of the deployment.
      *
      * @var array<string, mixed>
      */
     public array $context;
-
-    /**
-     * Token for communicating with Dew.
-     */
-    public string $token;
 
     /**
      * Name of the environment.
@@ -67,12 +65,9 @@ class Deployment
         //
     }
 
-    /**
-     * Configure Dew token.
-     */
-    public function tokenUsing(string $token): self
+    public function clientUsing(CommunicatesWithDew $client): self
     {
-        $this->token = $token;
+        $this->client = $client;
 
         return $this;
     }

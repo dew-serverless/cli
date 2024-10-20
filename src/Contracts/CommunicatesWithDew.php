@@ -10,6 +10,14 @@ interface CommunicatesWithDew
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
+    public function createDeployment(int $projectId, string $environment, array $data): array;
+
+    public function pingDeploymentCallback(string $callbackUrl): void;
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function getAvailableDatabaseZones(int $projectId, array $data): array;
 
     /**

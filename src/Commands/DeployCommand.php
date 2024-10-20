@@ -2,7 +2,7 @@
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Configuration;
+use Dew\Cli\Client;
 use Dew\Cli\Deployment;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -27,7 +27,7 @@ class DeployCommand extends Command
 
         $deployment = (new Deployment(getcwd()))
             ->usePublicPath('/public')
-            ->tokenUsing(Configuration::createFromEnvironment()->getToken())
+            ->clientUsing(Client::make())
             ->configUsing(ProjectConfig::load())
             ->forEnvironment($input->getArgument('environment') ?: $io->ask('Environment name'))
             ->outputUsing($output);

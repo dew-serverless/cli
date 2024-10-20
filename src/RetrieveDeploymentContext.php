@@ -9,16 +9,12 @@ class RetrieveDeploymentContext
      */
     public function __invoke(Deployment $deployment): Deployment
     {
-        $response = Client::make(['token' => $deployment->token])
-            ->post(sprintf(
-                '/api/projects/%s/environments/%s/deployments',
-                $deployment->config->getId(), $deployment->environment
-            ), [
+        $response = $deployment->client->createDeployment(
+            $deployment->config->getId(), $deployment->environment, [
                 'manifest' => $deployment->config->getRaw(),
-            ]);
+            ]
+        );
 
-        $deployment->contextUsing($response['data']);
-
-        return $deployment;
+        return $deployment->contextUsing($response['data']);
     }
 }
