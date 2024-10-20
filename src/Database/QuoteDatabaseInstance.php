@@ -155,7 +155,7 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
         $quotation->setPromotion(
             collect($response['Rules']['Rule'])
-                ->map(fn ($rule) => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description']))
+                ->map(fn ($rule) => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description'] ?? ''))
                 ->all()
         );
 
@@ -184,7 +184,7 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
      *   },
      *   Rules: array{
      *     Rule: array{
-     *       Description: string,
+     *       Description?: string,
      *       Name: string,
      *       RuleId: int
      *     }[]
