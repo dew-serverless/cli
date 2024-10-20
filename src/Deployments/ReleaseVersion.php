@@ -8,7 +8,7 @@ class ReleaseVersion
 {
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Release a new version\n";
+        $deployment->output?->writeln('Release a new version');
 
         $deployment->client->pingDeploymentCallback(
             $deployment->context['callback']

@@ -14,7 +14,7 @@ class UploadAssets
      */
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Upload the assets\n";
+        $deployment->output?->writeln('Upload assets');
 
         $oss = new OssClient(
             $deployment->context['credentials']['access_key_id'],

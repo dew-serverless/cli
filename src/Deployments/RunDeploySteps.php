@@ -12,7 +12,7 @@ class RunDeploySteps
      */
     public function __invoke(Deployment $deployment): Deployment
     {
-        echo "Run deploy steps\n";
+        $deployment->output?->writeln('Run deploy steps');
 
         $config = $deployment->config->getEnvironment($deployment->environment);
 
