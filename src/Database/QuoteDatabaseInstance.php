@@ -95,7 +95,7 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
         $range = $class['DBInstanceStorageRange'];
 
-        return new StorageRange($range['minValue'], $range['maxValue'], $range['step']);
+        return new StorageRange($range['MinValue'], $range['MaxValue'], $range['Step']);
     }
 
     /**
