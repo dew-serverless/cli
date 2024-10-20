@@ -157,13 +157,13 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
 
         $quotation->setPromotion(
             collect($response['Rules']['Rule'])
-                ->map(fn ($rule): \Dew\Cli\Database\Promotion => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description'] ?? ''))
+                ->map(fn ($rule): Promotion => new Promotion($rule['RuleId'], $rule['Name'], $rule['Description'] ?? ''))
                 ->all()
         );
 
         $quotation->setCoupons(
             collect($response['PriceInfo']['Coupons']['Coupon'])
-                ->map(fn ($coupon): \Dew\Cli\Database\Coupon => new Coupon($coupon['CouponNo'], $coupon['Name'], $coupon['Description'], $coupon['IsSelected'] === 'true'))
+                ->map(fn ($coupon): Coupon => new Coupon($coupon['CouponNo'], $coupon['Name'], $coupon['Description'], $coupon['IsSelected'] === 'true'))
                 ->all()
         );
 
