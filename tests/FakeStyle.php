@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Tests;
 
 use PHPUnit\Framework\Assert;
@@ -246,7 +248,7 @@ class FakeStyle implements StyleInterface
     {
         $header = implode('|', $headers);
 
-        $this->tables[$header] = array_map(fn ($row) => implode('|', $row), $rows);
+        $this->tables[$header] = array_map(fn ($row): string => implode('|', $row), $rows);
 
         return $this;
     }

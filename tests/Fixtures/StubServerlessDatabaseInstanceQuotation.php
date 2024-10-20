@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Tests\Fixtures;
 
 use Dew\Cli\Contracts\ServerlessInstanceQuotation;

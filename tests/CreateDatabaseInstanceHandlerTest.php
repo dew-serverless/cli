@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Dew\Cli\Contracts\CommunicatesWithDew;
 use Dew\Cli\Database\CreateDatabaseInstanceHandler;
 use Dew\Cli\Tests\FakeStyle;
@@ -7,7 +9,7 @@ use Dew\Cli\Tests\Fixtures\StubMySqlDatabaseInstanceQuoter;
 use Dew\Cli\Tests\Fixtures\StubMySqlServerlessDatabaseInstanceQuoter;
 use Symfony\Component\Console\Input\InputInterface;
 
-test('pay-as-you-go database instance creation', function () {
+test('pay-as-you-go database instance creation', function (): void {
     $input = Mockery::spy(InputInterface::class);
 
     $io = (new FakeStyle)
@@ -36,7 +38,7 @@ test('pay-as-you-go database instance creation', function () {
         ->handle();
 });
 
-test('subscription database instance creation', function () {
+test('subscription database instance creation', function (): void {
     $input = Mockery::spy(InputInterface::class);
 
     $io = (new FakeStyle)
@@ -67,7 +69,7 @@ test('subscription database instance creation', function () {
         ->handle();
 });
 
-test('serverless database instance creation', function () {
+test('serverless database instance creation', function (): void {
     $input = Mockery::spy(InputInterface::class);
 
     $io = (new FakeStyle)
@@ -100,7 +102,7 @@ test('serverless database instance creation', function () {
         ->handle();
 });
 
-test('unsupported database instance creation', function () {
+test('unsupported database instance creation', function (): void {
     $input = Mockery::spy(InputInterface::class);
 
     $io = (new FakeStyle)
@@ -112,6 +114,6 @@ test('unsupported database instance creation', function () {
         ->forProject(9999)
         ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makePayAsYouGo());
 
-    expect(fn () => $handler->handle())
+    expect(fn (): int => $handler->handle())
         ->toThrow(InvalidArgumentException::class, 'Unsupported database instance type.');
 });

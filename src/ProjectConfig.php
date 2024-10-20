@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli;
 
 use Symfony\Component\Yaml\Yaml;
@@ -21,7 +23,7 @@ final class ProjectConfig
     {
         $contents = file_get_contents(getcwd().'/dew.yaml');
 
-        return new static($contents);
+        return new self($contents);
     }
 
     /**

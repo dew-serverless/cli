@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Database;
 
 use Dew\Cli\Contracts\Promotion as PromotionContract;

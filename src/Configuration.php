@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli;
 
 final class Configuration
 {
     public function __construct(
-        protected string $path
+        private string $path
     ) {
         //
     }
@@ -14,7 +16,7 @@ final class Configuration
     {
         $user = posix_getpwuid(posix_getuid());
 
-        return new static($user['dir'].'/.dew');
+        return new self($user['dir'].'/.dew');
     }
 
     public function setToken(string $accessToken): self
@@ -59,7 +61,7 @@ final class Configuration
         return $this->path;
     }
 
-    protected function ensureExists(): void
+    private function ensureExists(): void
     {
         if ($this->exists()) {
             return;
@@ -69,12 +71,12 @@ final class Configuration
         $this->createEmptyStore();
     }
 
-    protected function createPath(): void
+    private function createPath(): void
     {
         mkdir($this->path, 0700, recursive: true);
     }
 
-    protected function createEmptyStore(): void
+    private function createEmptyStore(): void
     {
         file_put_contents($this->path.'/config.json', json_encode([]), LOCK_EX);
 

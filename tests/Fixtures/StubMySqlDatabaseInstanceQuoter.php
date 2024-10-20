@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Tests\Fixtures;
 
 use Dew\Cli\Contracts\CommunicatesWithDew;
@@ -19,13 +21,13 @@ final class StubMySqlDatabaseInstanceQuoter extends QuoteDatabaseInstance
 
     public static function makePayAsYouGo(): static
     {
-        return (new static(Mockery::mock(CommunicatesWithDew::class), 1))
+        return (new self(Mockery::mock(CommunicatesWithDew::class), 1))
             ->setType(InstanceType::PAY_AS_YOU_GO);
     }
 
     public static function makeSubscription(): static
     {
-        return (new static(Mockery::mock(CommunicatesWithDew::class), 1))
+        return (new self(Mockery::mock(CommunicatesWithDew::class), 1))
             ->setType(InstanceType::SUBSCRIPTION);
     }
 

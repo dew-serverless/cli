@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Commands;
 
 use Symfony\Component\Console\Attribute\AsCommand;

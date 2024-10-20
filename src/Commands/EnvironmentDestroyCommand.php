@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dew\Cli\Commands;
 
 use Dew\Cli\Client;
@@ -22,7 +24,7 @@ class EnvironmentDestroyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $token = Configuration::createFromEnvironment()->getToken();
+        Configuration::createFromEnvironment()->getToken();
         $projectConfig = ProjectConfig::load();
         $io = new SymfonyStyle($input, $output);
         $environment = $input->getArgument('name') ?: $io->ask('Environment name');
