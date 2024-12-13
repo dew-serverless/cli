@@ -24,6 +24,14 @@ interface CommunicatesWithDew
     public function getCodePackageUploadUrl(int $project, int $deploymentId, array $data): string;
 
     /**
+     * Get URLs to upload assets for the deployment.
+     *
+     * @param  array<int, array{path: string, filesize: int, mime_type: string, checksum: string}>  $files
+     * @return array<string, string>
+     */
+    public function getAssetUploadUrls(int $projectId, int $deploymentId, array $files): array;
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */

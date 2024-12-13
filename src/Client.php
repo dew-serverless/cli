@@ -54,6 +54,15 @@ final class Client implements CommunicatesWithDew
         return $response['data']['url'];
     }
 
+    public function getAssetUploadUrls(int $projectId, int $deploymentId, array $files): array
+    {
+        $response = $this->post(sprintf('/api/projects/%s/deployments/%s/assets',
+            $projectId, $deploymentId
+        ), ['files' => $files]);
+
+        return $response['data'];
+    }
+
     public function getAvailableDatabaseZones(int $projectId, array $data): array
     {
         return $this->get(sprintf(
