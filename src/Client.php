@@ -45,6 +45,15 @@ final class Client implements CommunicatesWithDew
         $this->post(sprintf('/api/deployments/%s/callback', $deploymentId));
     }
 
+    public function getCodePackageUploadUrl(int $projectId, int $deploymentId, array $data): string
+    {
+        $response = $this->post(sprintf('/api/projects/%s/deployments/%s/artifacts',
+            $projectId, $deploymentId
+        ), $data);
+
+        return $response['data']['url'];
+    }
+
     public function getAvailableDatabaseZones(int $projectId, array $data): array
     {
         return $this->get(sprintf(

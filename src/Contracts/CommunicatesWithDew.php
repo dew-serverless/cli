@@ -17,6 +17,13 @@ interface CommunicatesWithDew
     public function pingDeploymentCallback(int $deploymentId): void;
 
     /**
+     * Get the URL to upload the code package for the deployment.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function getCodePackageUploadUrl(int $project, int $deploymentId, array $data): string;
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */

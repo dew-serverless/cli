@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Dew\Cli\Deployments;
 
 use Dew\Cli\Deployment;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 
 class UploadCodePackage
 {
@@ -12,7 +14,17 @@ class UploadCodePackage
     {
         $deployment->output?->writeln('Upload code package');
 
-        $deployment->output?->writeln($deployment->zipPath());
+        $url = $deployment->client->getCodePackageUploadUrl(
+            $deployment->config->getId(), $deployment->context['id'], [
+                'type' => 'code',
+                'checksum' => sha1_file($deployment->zipPath()),
+                'filesize' => filesize($deployment->zipPath()),
+            ]
+        );
+
+        (new Client)->put($url, [
+            'body' => Psr7\Utils::tryFopen($deployment->zipPath(), 'r'),
+        ]);
 
         return $deployment;
     }
