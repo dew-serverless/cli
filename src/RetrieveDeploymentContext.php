@@ -12,7 +12,7 @@ class RetrieveDeploymentContext
     public function __invoke(Deployment $deployment): Deployment
     {
         $response = $deployment->client->createDeployment(
-            $deployment->config->getId(), $deployment->environment, [
+            $deployment->config->getId(), [
                 'manifest' => $deployment->config->getRaw(),
             ]
         );

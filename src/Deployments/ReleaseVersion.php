@@ -13,7 +13,7 @@ class ReleaseVersion
         $deployment->output?->writeln('Release a new version');
 
         $deployment->client->pingDeploymentCallback(
-            $deployment->context['callback']
+            $deployment->context['id']
         );
 
         return $deployment;

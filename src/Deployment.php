@@ -11,7 +11,6 @@ use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
 use Dew\Cli\Deployments\ReleaseVersion;
 use Dew\Cli\Deployments\RunBuildSteps;
-use Dew\Cli\Deployments\RunDeploySteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +31,6 @@ class Deployment
         PackageUpBuildDirectory::class,
         UploadCodePackage::class,
         ReleaseVersion::class,
-        RunDeploySteps::class,
     ];
 
     public CommunicatesWithDew $client;
@@ -43,11 +41,6 @@ class Deployment
      * @var array<string, mixed>
      */
     public array $context;
-
-    /**
-     * Name of the environment.
-     */
-    public string $environment;
 
     public ?OutputInterface $output = null;
 
@@ -80,16 +73,6 @@ class Deployment
     public function configUsing(ProjectConfig $config): self
     {
         $this->config = $config;
-
-        return $this;
-    }
-
-    /**
-     * Configure environment to deploy.
-     */
-    public function forEnvironment(string $environment): self
-    {
-        $this->environment = $environment;
 
         return $this;
     }
