@@ -33,11 +33,11 @@ class RetrieveDeploymentContext
     {
         return PhpVersion::fromComposer(implode(DIRECTORY_SEPARATOR, [
             $deployment->appDir(), 'composer.json'
-        ])) ?: null;
+        ]));
     }
 
     public function phpVersionFromRuntime(): ?string
     {
-        return PhpVersion::fromRuntime() ?: null;
+        return PhpVersion::fromRuntime();
     }
 }
