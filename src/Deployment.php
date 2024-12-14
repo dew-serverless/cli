@@ -50,6 +50,11 @@ class Deployment
     public ProjectConfig $config;
 
     /**
+     * Determines whether to deploy to the production environment.
+     */
+    public bool $isProduction = false;
+
+    /**
      * The public path of the application.
      */
     protected string $publicPath;
@@ -85,6 +90,16 @@ class Deployment
     public function contextUsing(array $context): self
     {
         $this->context = $context;
+
+        return $this;
+    }
+
+    /**
+     * Deploy to production environment.
+     */
+    public function production(bool $production = true): self
+    {
+        $this->isProduction = $production;
 
         return $this;
     }

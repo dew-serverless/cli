@@ -14,6 +14,7 @@ class RetrieveDeploymentContext
         $response = $deployment->client->createDeployment(
             $deployment->config->getId(), [
                 'manifest' => $deployment->config->getRaw(),
+                'production' => $deployment->isProduction,
             ]
         );
 

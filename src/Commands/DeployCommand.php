@@ -17,6 +17,14 @@ use Throwable;
 #[AsCommand(name: 'deploy', description: 'Deploy the app to Alibaba Cloud')]
 class DeployCommand extends Command
 {
+    protected function configure(): void
+    {
+        $this->addOption(
+            name: 'prod',
+            description: 'Make this deployment to production environment'
+        );
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -25,6 +33,7 @@ class DeployCommand extends Command
             ->usePublicPath('/public')
             ->clientUsing(Client::make())
             ->configUsing(ProjectConfig::load())
+            ->production($input->getOption('prod'))
             ->outputUsing($output);
 
         try {
