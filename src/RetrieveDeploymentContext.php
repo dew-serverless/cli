@@ -16,6 +16,7 @@ class RetrieveDeploymentContext
                 'manifest' => $deployment->config->getRaw(),
                 'production' => $deployment->isProduction,
                 'php' => $this->phpVersion($deployment),
+                ...$this->gitContext($deployment->appDir()),
             ]
         );
 
@@ -39,5 +40,28 @@ class RetrieveDeploymentContext
     public function phpVersionFromRuntime(): ?string
     {
         return PhpVersion::fromRuntime();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function gitContext(string $path): array
+    {
+        $git = Git::fromContext($path);
+
+        if (! $git instanceof Git) {
+            return [];
+        }
+
+        return [
+            'git' => [
+                'commit_hash' => $git->hash,
+                'commit_message' => $git->subject,
+                'author_name' => $git->authorName,
+                'author_email' => $git->authorEmail,
+                'branch' => $git->branch,
+                'is_dirty' => $git->isDirty,
+            ],
+        ];
     }
 }
