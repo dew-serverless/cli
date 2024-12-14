@@ -22,3 +22,7 @@ test('from composer returns the matched upper bound', function () {
 test('from composer returns false if could not find a matched version', function () {
     expect(PhpVersion::fromComposer(__DIR__.'/Fixtures/Composer/exact-99.json'))->toBeFalse();
 });
+
+test('from runtime returns current php binary version', function () {
+    expect(PhpVersion::fromRuntime())->not->toBeFalse();
+});

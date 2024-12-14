@@ -40,4 +40,15 @@ final class PhpVersion
 
         return $versions[0] ?? false;
     }
+
+    public static function fromRuntime(): string|false
+    {
+        $version = sprintf('%s.%s', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);
+
+        if (in_array($version, self::SUPPORTED)) {
+            return $version;
+        }
+
+        return false;
+    }
 }

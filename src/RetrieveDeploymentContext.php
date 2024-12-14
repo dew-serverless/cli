@@ -15,13 +15,29 @@ class RetrieveDeploymentContext
             $deployment->config->getId(), [
                 'manifest' => $deployment->config->getRaw(),
                 'production' => $deployment->isProduction,
-                'php' => PhpVersion::fromComposer(implode(DIRECTORY_SEPARATOR, [
-                    $deployment->appDir(),
-                    'composer.json',
-                ])),
+                'php' => $this->phpVersion($deployment),
             ]
         );
 
         return $deployment->contextUsing($response['data']);
+    }
+
+    public function phpVersion(Deployment $deployment): ?string
+    {
+        return $this->phpVersionFromComposerJson($deployment)
+            ?? $this->phpVersionFromRuntime()
+            ?? null;
+    }
+
+    public function phpVersionFromComposerJson(Deployment $deployment): ?string
+    {
+        return PhpVersion::fromComposer(implode(DIRECTORY_SEPARATOR, [
+            $deployment->appDir(), 'composer.json'
+        ])) ?: null;
+    }
+
+    public function phpVersionFromRuntime(): ?string
+    {
+        return PhpVersion::fromRuntime() ?: null;
     }
 }
