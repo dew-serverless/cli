@@ -15,6 +15,10 @@ class RetrieveDeploymentContext
             $deployment->config->getId(), [
                 'manifest' => $deployment->config->getRaw(),
                 'production' => $deployment->isProduction,
+                'php' => PhpVersion::fromComposer(implode(DIRECTORY_SEPARATOR, [
+                    $deployment->appDir(),
+                    'composer.json',
+                ])),
             ]
         );
 
