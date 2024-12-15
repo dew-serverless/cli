@@ -41,7 +41,7 @@
         }
     },
     "scripts": {
-        "refact": "rector",
+        "refactor": "rector",
         "lint": "phpstan analyse",
         "test": "pest"
     },
