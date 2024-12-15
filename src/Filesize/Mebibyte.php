@@ -16,7 +16,7 @@ final class Mebibyte implements Size
 
     public static function fromByte(int $bytes): static
     {
-        return new static($bytes / 1024 ** 2);
+        return new self($bytes / 1024 ** 2);
     }
 
     public function symbol(): string

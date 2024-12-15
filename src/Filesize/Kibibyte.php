@@ -16,7 +16,7 @@ final class Kibibyte implements Size
 
     public static function fromByte(int $bytes): static
     {
-        return new static($bytes / 1024);
+        return new self($bytes / 1024);
     }
 
     public function symbol(): string

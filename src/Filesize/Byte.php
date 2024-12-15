@@ -16,7 +16,7 @@ final class Byte implements Size
 
     public static function fromByte(int $bytes): static
     {
-        return new static($bytes);
+        return new self($bytes);
     }
 
     public function symbol(): string

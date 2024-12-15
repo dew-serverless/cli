@@ -1,27 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 use Dew\Cli\Filesize\Byte;
 use Dew\Cli\Filesize\Filesize;
 use Dew\Cli\Filesize\Kibibyte;
 use Dew\Cli\Filesize\Mebibyte;
 
-test('make byte resolution', function () {
+test('make byte resolution', function (): void {
     expect(Filesize::make(0))->toBeInstanceOf(Byte::class);
     expect(Filesize::make(512))->toBeInstanceOf(Byte::class);
     expect(Filesize::make(1024 - 1))->toBeInstanceOf(Byte::class);
 });
 
-test('make kibibyte resolution', function () {
+test('make kibibyte resolution', function (): void {
     expect(Filesize::make(1024))->toBeInstanceOf(Kibibyte::class);
     expect(Filesize::make(1024 ** 2 - 1))->toBeInstanceOf(Kibibyte::class);
 });
 
-test('make mebibyte resolution', function () {
+test('make mebibyte resolution', function (): void {
     expect(Filesize::make(1024 ** 2))->toBeInstanceOf(Mebibyte::class);
     expect(Filesize::make(1024 ** 3))->toBeInstanceOf(Mebibyte::class);
 });
 
-test('round rounds a filesize', function () {
+test('round rounds a filesize', function (): void {
     expect(Filesize::round(4))->toBe(4.0)
         ->and(Filesize::round(5))->toBe(5.0)
         ->and(Filesize::round(4.4))->toBe(4.0)

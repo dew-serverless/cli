@@ -25,7 +25,7 @@ final class Git
     /**
      * Create a git instance from the context.
      */
-    public static function fromContext(string $path): ?static
+    public static function fromContext(): ?static
     {
         // %H: commit hash
         // %an: author name
@@ -44,7 +44,7 @@ final class Git
 
         $output = explode("\n", $process->getOutput());
 
-        return new static(
+        return new self(
             hash: $output[0],
             authorName: $output[1],
             authorEmail: $output[2],
