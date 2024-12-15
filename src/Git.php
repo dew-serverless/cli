@@ -25,7 +25,7 @@ final class Git
     /**
      * Create a git instance from the context.
      */
-    public static function fromContext(): ?static
+    public static function fromContext(string $path): ?static
     {
         // %H: commit hash
         // %an: author name
@@ -36,7 +36,7 @@ final class Git
         git show -s --format="%H%n%an%n%ae%n%s" \
             && git rev-parse --abbrev-ref HEAD \
             && git status --porcelain
-        COMMAND);
+        COMMAND, $path);
 
         if ($process->run() !== 0) {
             return null;
