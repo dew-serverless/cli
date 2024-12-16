@@ -10,6 +10,7 @@ use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
 use Dew\Cli\Deployments\ReleaseVersion;
+use Dew\Cli\Deployments\RetrieveDeploymentContext;
 use Dew\Cli\Deployments\RunBuildSteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;

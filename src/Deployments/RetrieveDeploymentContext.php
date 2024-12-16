@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dew\Cli;
+namespace Dew\Cli\Deployments;
+
+use Dew\Cli\Deployment;
+use Dew\Cli\Git;
+use Dew\Cli\PhpVersion;
 
 class RetrieveDeploymentContext
 {
