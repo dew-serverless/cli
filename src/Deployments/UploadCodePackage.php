@@ -17,7 +17,7 @@ class UploadCodePackage
         $deployment->output?->writeln('Upload code package');
 
         $url = $deployment->client->getCodePackageUploadUrl(
-            $deployment->config->getId(), $deployment->context['id'], [
+            $deployment->context['id'], [
                 'type' => 'code',
                 'checksum' => sha1_file($deployment->zipPath()),
                 'filesize' => $filesize = filesize($deployment->zipPath()),

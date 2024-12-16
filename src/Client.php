@@ -45,20 +45,22 @@ final class Client implements CommunicatesWithDew
         $this->post(sprintf('/api/deployments/%s/callback', $deploymentId));
     }
 
-    public function getCodePackageUploadUrl(int $projectId, int $deploymentId, array $data): string
+    public function getCodePackageUploadUrl(int $deploymentId, array $data): string
     {
-        $response = $this->post(sprintf('/api/projects/%s/deployments/%s/artifacts',
-            $projectId, $deploymentId
-        ), $data);
+        $response = $this->post(
+            sprintf('/api/deployments/%s/artifacts', $deploymentId),
+            $data
+        );
 
         return $response['data']['url'];
     }
 
-    public function getAssetUploadUrls(int $projectId, int $deploymentId, array $files): array
+    public function getAssetUploadUrls(int $deploymentId, array $files): array
     {
-        $response = $this->post(sprintf('/api/projects/%s/deployments/%s/assets',
-            $projectId, $deploymentId
-        ), ['files' => $files]);
+        $response = $this->post(
+            sprintf('/api/deployments/%s/assets', $deploymentId),
+            ['files' => $files]
+        );
 
         return $response['data'];
     }

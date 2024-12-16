@@ -50,8 +50,7 @@ class UploadAssets
             ]);
 
             $urls = $deployment->client->getAssetUploadUrls(
-                $deployment->config->getId(), $deployment->context['id'],
-                $build->values()->all()
+                $deployment->context['id'], $build->values()->all()
             );
 
             foreach ($files as $file) {
