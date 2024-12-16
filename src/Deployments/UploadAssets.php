@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Dew\Cli\Deployments;
 
 use Dew\Cli\Deployment;
-use OSS\OssClient;
+use Dew\Cli\Outputs\FileUploadOutput;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class UploadAssets
 {
@@ -18,26 +22,52 @@ class UploadAssets
     {
         $deployment->output?->writeln('Upload assets');
 
-        $oss = new OssClient(
-            $deployment->context['credentials']['access_key_id'],
-            $deployment->context['credentials']['access_key_secret'],
-            sprintf('oss-%s.aliyuncs.com', $deployment->context['region']),
-            $isCname = false,
-            $deployment->context['credentials']['security_token'],
-        );
-
         $assets = $this->files()->in(
             $publicPath = Path::join($deployment->buildDir(), $deployment->publicPath())
         );
 
+        $i = 0;
+        $cursor = -1;
+        $chunks = [];
         foreach ($assets as $file) {
-            $relativePath = Path::makeRelative($file->getPath(), $publicPath);
+            if ($i % 25 === 0) {
+                $cursor++;
+            }
 
-            $oss->uploadFile(
-                $deployment->context['asset_bucket'],
-                Path::join($deployment->context['uuid'], $relativePath, $file->getFilename()),
-                $file->getRealPath()
+            $chunks[$cursor][] = $file;
+
+            $i++;
+        }
+
+        foreach ($chunks as $files) {
+            $build = collect($files)->flatMap(fn (SplFileInfo $file): array => [
+                $file->getRelativePathname() => [
+                    'path' => $file->getRelativePathname(),
+                    'filesize' => $file->getSize(),
+                    'mime_type' => Psr7\MimeType::fromFilename($file->getFilename()),
+                    'checksum' => sha1_file($file->getPathname()),
+                ],
+            ]);
+
+            $urls = $deployment->client->getAssetUploadUrls(
+                $deployment->context['id'], $build->values()->all()
             );
+
+            foreach ($files as $file) {
+                $output = $deployment->output instanceof OutputInterface
+                    ? new FileUploadOutput($deployment->output, $file->getRelativePathname(), $file->getSize())
+                    : null;
+
+                (new Client)->put($urls[$file->getRelativePathname()], [
+                    'headers' => [
+                        'Content-Type' => $build[$file->getRelativePathname()]['mime_type'],
+                    ],
+                    'body' => Psr7\Utils::tryFopen($file->getPathname(), 'r'),
+                    'progress' => fn ($dt, $db, $ut, $ub) => $output?->update($ut),
+                ]);
+
+                $output?->complete();
+            }
         }
 
         return $deployment;

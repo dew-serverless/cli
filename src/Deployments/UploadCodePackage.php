@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Dew\Cli\Deployments;
 
 use Dew\Cli\Deployment;
-use OSS\OssClient;
+use Dew\Cli\Outputs\FileUploadOutput;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class UploadCodePackage
 {
@@ -13,19 +16,24 @@ class UploadCodePackage
     {
         $deployment->output?->writeln('Upload code package');
 
-        $oss = new OssClient(
-            $deployment->context['credentials']['access_key_id'],
-            $deployment->context['credentials']['access_key_secret'],
-            sprintf('oss-%s.aliyuncs.com', $deployment->context['region']),
-            $isCname = false,
-            $deployment->context['credentials']['security_token'],
+        $url = $deployment->client->getCodePackageUploadUrl(
+            $deployment->context['id'], [
+                'type' => 'code',
+                'checksum' => sha1_file($deployment->zipPath()),
+                'filesize' => $filesize = filesize($deployment->zipPath()),
+            ]
         );
 
-        $oss->uploadFile(
-            $deployment->context['deployment_bucket'],
-            $deployment->context['deployment_object'],
-            $deployment->zipPath()
-        );
+        $output = $deployment->output instanceof OutputInterface
+            ? new FileUploadOutput($deployment->output, $deployment->zipName(), $filesize)
+            : null;
+
+        (new Client)->put($url, [
+            'body' => Psr7\Utils::tryFopen($deployment->zipPath(), 'r'),
+            'progress' => fn ($dt, $db, $ut, $ub) => $output?->update($ub),
+        ]);
+
+        $output?->complete();
 
         return $deployment;
     }

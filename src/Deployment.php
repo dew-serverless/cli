@@ -10,8 +10,8 @@ use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
 use Dew\Cli\Deployments\PublishStubs;
 use Dew\Cli\Deployments\ReleaseVersion;
+use Dew\Cli\Deployments\RetrieveDeploymentContext;
 use Dew\Cli\Deployments\RunBuildSteps;
-use Dew\Cli\Deployments\RunDeploySteps;
 use Dew\Cli\Deployments\UploadAssets;
 use Dew\Cli\Deployments\UploadCodePackage;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +32,6 @@ class Deployment
         PackageUpBuildDirectory::class,
         UploadCodePackage::class,
         ReleaseVersion::class,
-        RunDeploySteps::class,
     ];
 
     public CommunicatesWithDew $client;
@@ -44,17 +43,17 @@ class Deployment
      */
     public array $context;
 
-    /**
-     * Name of the environment.
-     */
-    public string $environment;
-
     public ?OutputInterface $output = null;
 
     /**
      * Project configuration.
      */
     public ProjectConfig $config;
+
+    /**
+     * Determines whether to deploy to the production environment.
+     */
+    public bool $isProduction = false;
 
     /**
      * The public path of the application.
@@ -85,16 +84,6 @@ class Deployment
     }
 
     /**
-     * Configure environment to deploy.
-     */
-    public function forEnvironment(string $environment): self
-    {
-        $this->environment = $environment;
-
-        return $this;
-    }
-
-    /**
      * Configure deployment context.
      *
      * @param  array<string, mixed>  $context
@@ -102,6 +91,16 @@ class Deployment
     public function contextUsing(array $context): self
     {
         $this->context = $context;
+
+        return $this;
+    }
+
+    /**
+     * Deploy to production environment.
+     */
+    public function production(bool $production = true): self
+    {
+        $this->isProduction = $production;
 
         return $this;
     }

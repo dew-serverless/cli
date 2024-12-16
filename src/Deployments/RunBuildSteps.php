@@ -16,8 +16,7 @@ class RunBuildSteps
     {
         $deployment->output?->writeln('Run build steps');
 
-        $config = $deployment->config->getEnvironment($deployment->environment);
-        $steps = $config['build'] ?? [];
+        $steps = $deployment->context['build'] ?? [];
 
         if (empty($steps)) {
             return $deployment;

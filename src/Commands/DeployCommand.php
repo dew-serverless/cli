@@ -9,7 +9,6 @@ use Dew\Cli\Deployment;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,7 +19,10 @@ class DeployCommand extends Command
 {
     protected function configure(): void
     {
-        $this->addArgument('environment', InputArgument::OPTIONAL, 'Environment name');
+        $this->addOption(
+            name: 'prod',
+            description: 'Make this deployment to production environment'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -31,7 +33,7 @@ class DeployCommand extends Command
             ->usePublicPath('/public')
             ->clientUsing(Client::make())
             ->configUsing(ProjectConfig::load())
-            ->forEnvironment($input->getArgument('environment') ?: $io->ask('Environment name'))
+            ->production($input->getOption('prod'))
             ->outputUsing($output);
 
         try {

@@ -33,17 +33,36 @@ final class Client implements CommunicatesWithDew
         );
     }
 
-    public function createDeployment(int $projectId, string $environment, array $data): array
+    public function createDeployment(int $projectId, array $data): array
     {
-        return $this->post(sprintf(
-            '/api/projects/%s/environments/%s/deployments',
-            $projectId, $environment
-        ), $data);
+        return $this->post(
+            sprintf('/api/projects/%s/deployments', $projectId), $data
+        );
     }
 
-    public function pingDeploymentCallback(string $callbackUrl): void
+    public function pingDeploymentCallback(int $deploymentId): void
     {
-        $this->post($callbackUrl);
+        $this->post(sprintf('/api/deployments/%s/callback', $deploymentId));
+    }
+
+    public function getCodePackageUploadUrl(int $deploymentId, array $data): string
+    {
+        $response = $this->post(
+            sprintf('/api/deployments/%s/artifacts', $deploymentId),
+            $data
+        );
+
+        return $response['data']['url'];
+    }
+
+    public function getAssetUploadUrls(int $deploymentId, array $files): array
+    {
+        $response = $this->post(
+            sprintf('/api/deployments/%s/assets', $deploymentId),
+            ['files' => $files]
+        );
+
+        return $response['data'];
     }
 
     public function getAvailableDatabaseZones(int $projectId, array $data): array
