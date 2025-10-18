@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
+use Dew\Cli\Configuration\FileRepository;
+use Dew\Cli\Configuration\Repository;
 use Dew\Cli\Contracts\Client;
 use Dew\Cli\Models\Command;
 use GuzzleHttp\Client as GuzzleClient;
@@ -20,7 +22,7 @@ final class Dew implements Client
      */
     public function __construct(
         private string $endpoint,
-        private Configuration $config
+        private Repository $config
     ) {
         $this->endpoint = rtrim($endpoint, '/').'/';
     }
@@ -32,7 +34,7 @@ final class Dew implements Client
     {
         return new self(
             getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT,
-            Configuration::createFromEnvironment()
+            FileRepository::createFromEnvironment()
         );
     }
 
@@ -165,8 +167,8 @@ final class Dew implements Client
             'Accept' => 'application/json',
         ];
 
-        if (is_string($this->config->getToken())) {
-            $headers['Authorization'] = 'Bearer '.$this->config->getToken();
+        if (is_string($this->config->get('token'))) {
+            $headers['Authorization'] = 'Bearer '.$this->config->get('token');
         }
 
         return new GuzzleClient([
