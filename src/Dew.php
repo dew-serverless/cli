@@ -30,12 +30,20 @@ final class Dew implements Client
     /**
      * Create a new client instance from environment.
      */
-    public static function make(): static
+    public static function make(?Repository $config = null): static
     {
         return new self(
             getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT,
-            FileRepository::createFromEnvironment()
+            $config ?? FileRepository::createFromEnvironment()
         );
+    }
+
+    public function user(): array
+    {
+        $response = $this->client()->request('GET', '/api/user');
+        $contents = (string) $response->getBody();
+
+        return json_decode($contents, associative: true);
     }
 
     public function createDeployment(int $projectId, array $data): array

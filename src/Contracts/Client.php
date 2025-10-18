@@ -6,8 +6,18 @@ namespace Dew\Cli\Contracts;
 
 use Dew\Cli\Models\Command;
 
+/**
+ * @phpstan-type User array{id: int, name: string, email: string}
+ */
 interface Client
 {
+    /**
+     * The authenticated user.
+     *
+     * @return User
+     */
+    public function user(): array;
+
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
