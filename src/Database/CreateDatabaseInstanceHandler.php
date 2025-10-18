@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Contracts\InstanceQuotation;
 use Dew\Cli\Contracts\ServerlessInstanceQuotation;
 use Illuminate\Support\Str;
@@ -21,7 +21,7 @@ class CreateDatabaseInstanceHandler
      */
     public int $projectId;
 
-    private CommunicatesWithDew $client;
+    private Client $client;
 
     /**
      * The database instance builder.
@@ -55,7 +55,7 @@ class CreateDatabaseInstanceHandler
         return $this;
     }
 
-    public function clientUsing(CommunicatesWithDew $client): self
+    public function clientUsing(Client $client): self
     {
         $this->client = $client;
 

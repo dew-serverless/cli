@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Models\Command;
 use GuzzleHttp\Client as GuzzleClient;
 
-final class Client implements CommunicatesWithDew
+final class Dew implements Client
 {
     /**
      * Create a new Dew client.

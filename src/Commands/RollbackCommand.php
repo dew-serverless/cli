@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +28,7 @@ class RollbackCommand extends Command
 
         $config = ProjectConfig::load();
 
-        $response = Client::make()
+        $response = Dew::make()
             ->post(sprintf('/api/projects/%s/environments/%s/deployments/%s/rollback',
                 $config->getId(),
                 $input->getArgument('environment') ?: $io->ask('Environment name'),

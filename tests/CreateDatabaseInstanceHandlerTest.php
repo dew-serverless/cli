@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Database\CreateDatabaseInstanceHandler;
 use Dew\Cli\Tests\FakeStyle;
 use Dew\Cli\Tests\Fixtures\StubMySqlDatabaseInstanceQuoter;
@@ -32,7 +32,7 @@ test('pay-as-you-go database instance creation', function (): void {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
+        ->clientUsing(Mockery::mock(Client::class))
         ->forProject(9999)
         ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makePayAsYouGo())
         ->handle();
@@ -63,7 +63,7 @@ test('subscription database instance creation', function (): void {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
+        ->clientUsing(Mockery::mock(Client::class))
         ->forProject(9999)
         ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makeSubscription())
         ->handle();
@@ -96,7 +96,7 @@ test('serverless database instance creation', function (): void {
         ->expectsConfirmation('Confirm to create the database instance', false);
 
     (new CreateDatabaseInstanceHandler($input, $io))
-        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
+        ->clientUsing(Mockery::mock(Client::class))
         ->forProject(9999)
         ->quoterUsing(StubMySqlServerlessDatabaseInstanceQuoter::make())
         ->handle();
@@ -110,7 +110,7 @@ test('unsupported database instance creation', function (): void {
         ->expectsQuestion('What kind of instance do you want to setup', 'free');
 
     $handler = (new CreateDatabaseInstanceHandler($input, $io))
-        ->clientUsing(Mockery::mock(CommunicatesWithDew::class))
+        ->clientUsing(Mockery::mock(Client::class))
         ->forProject(9999)
         ->quoterUsing(StubMySqlDatabaseInstanceQuoter::makePayAsYouGo());
 

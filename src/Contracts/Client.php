@@ -6,7 +6,7 @@ namespace Dew\Cli\Contracts;
 
 use Dew\Cli\Models\Command;
 
-interface CommunicatesWithDew
+interface Client
 {
     /**
      * @param  array<string, mixed>  $data

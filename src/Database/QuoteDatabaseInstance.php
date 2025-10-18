@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Contracts\DatabaseInstanceQuoter;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation as QuotationContract;
@@ -14,8 +14,8 @@ abstract class QuoteDatabaseInstance implements DatabaseInstanceQuoter
     use ManagesDatabaseInstance, ManagesDatabaseInstanceNetwork;
 
     public function __construct(
-        private CommunicatesWithDew $client,
-        private int $projectId
+        private Client $client,
+        private int    $projectId
     ) {
         //
     }

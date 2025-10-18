@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,7 +32,7 @@ class ProjectCreateCommand extends Command
         $region = $input->getArgument('region')
             ?: $io->choice('The project deployed to', $regions, $regions[0]);
 
-        $response = Client::make()->post('/api/projects', [
+        $response = Dew::make()->post('/api/projects', [
             'name' => $name,
             'region' => $region,
         ]);
