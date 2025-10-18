@@ -11,25 +11,28 @@ use GuzzleHttp\Client as GuzzleClient;
 final class Dew implements Client
 {
     /**
-     * Create a new Dew client.
+     * The production endpoint.
+     */
+    private const DEFAULT_ENDPOINT = 'https://dew.work';
+
+    /**
+     * Create a new client instance.
      */
     public function __construct(
         private string $endpoint,
-        private string $token
+        private Configuration $config
     ) {
-        //
+        $this->endpoint = rtrim($endpoint, '/').'/';
     }
 
     /**
-     * Create a new Dew client from the configuration setup.
-     *
-     * @param  array<string, mixed>  $config
+     * Create a new client instance from environment.
      */
-    public static function make(array $config = []): static
+    public static function make(): static
     {
         return new self(
-            $config['endpoint'] ?? getenv('DEW_ENDPOINT'),
-            $config['token'] ?? Configuration::createFromEnvironment()->getToken()
+            getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT,
+            Configuration::createFromEnvironment()
         );
     }
 
@@ -154,16 +157,22 @@ final class Dew implements Client
     }
 
     /**
-     * Make a new Guzzle client.
+     * Create a new Guzzle HTTP client.
      */
     private function client(): GuzzleClient
     {
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+
+        if (is_string($this->config->getToken())) {
+            $headers['Authorization'] = 'Bearer '.$this->config->getToken();
+        }
+
         return new GuzzleClient([
             'base_uri' => $this->endpoint,
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$this->token,
-            ],
+            'headers' => $headers,
+            'timeout' => 3.0,
         ]);
     }
 }
