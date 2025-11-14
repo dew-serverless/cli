@@ -18,11 +18,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class LoginCommand extends Command
 {
     /**
-     * The maximum number of login attempts.
-     */
-    private const MAX_ATTEMPTS = 3;
-
-    /**
      * Create a new command instance.
      */
     public function __construct(
@@ -37,38 +32,27 @@ final class LoginCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $attempts = 0;
 
-        while ($attempts < self::MAX_ATTEMPTS) {
-            $attempts++;
+        $token = $this->askToken($io);
+        $response = $this->client($token)->user();
 
-            $token = $this->askToken($io);
-            $response = $this->client($token)->user();
+        if ($response->unauthorized()) {
+            $io->error('The token is invalid.');
 
-            if ($response->unauthorized()) {
-                $remaining = self::MAX_ATTEMPTS - $attempts;
-
-                $remaining > 0
-                    ? $io->error(sprintf('The token is invalid. You have %d attempt(s) left.', $remaining))
-                    : $io->error('The token is invalid.');
-
-                continue;
-            }
-
-            if ($response->error()) {
-                $message = $response->json('message', 'Unknown error occurred.');
-                $io->error('Failed to authenticate: '.$message);
-
-                return Command::FAILURE;
-            }
-
-            $this->config->set('token', $token);
-            $io->success(sprintf('You are logged in as %s.', $response->json('name')));
-
-            return Command::SUCCESS;
+            return Command::FAILURE;
         }
 
-        return Command::FAILURE;
+        if ($response->error()) {
+            $message = $response->json('message', 'Unknown error occurred.');
+            $io->error('Failed to authenticate: '.$message);
+
+            return Command::FAILURE;
+        }
+
+        $this->config->set('token', $token);
+        $io->success(sprintf('You are logged in as %s.', $response->json('name')));
+
+        return Command::SUCCESS;
     }
 
     /**
