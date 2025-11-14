@@ -33,6 +33,10 @@ final class LoginCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        if (! $this->ensureTokenIsNotConfigured($io)) {
+            return Command::SUCCESS;
+        }
+
         $token = $this->askToken($io);
         $response = $this->client($token)->user();
 
@@ -53,6 +57,18 @@ final class LoginCommand extends Command
         $io->success(sprintf('You are logged in as %s.', $response->json('name')));
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Ask the user to confirm overwriting an existing token if there is one.
+     */
+    private function ensureTokenIsNotConfigured(SymfonyStyle $io): bool
+    {
+        if ($this->config->has('token')) {
+            return $io->confirm('The API token has already been configured. Do you want to overwrite it?', false);
+        }
+
+        return true;
     }
 
     /**
