@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
-use Dew\Cli\Configuration\FileRepository;
-use Dew\Cli\Configuration\Repository;
 use Dew\Cli\Contracts\Client;
 use Dew\Cli\Http\Response;
 use Dew\Cli\Models\Command;
@@ -22,24 +20,30 @@ final class Dew implements Client
     private const DEFAULT_ENDPOINT = 'https://dew.work';
 
     /**
-     * Create a new client instance.
+     * The access token.
+     */
+    private ?string $token = null;
+
+    /**
+     * Create a client instance.
      */
     public function __construct(
-        private string $endpoint,
-        private Repository $config
+        private string $endpoint
     ) {
         $this->endpoint = rtrim($endpoint, '/').'/';
     }
 
     /**
-     * Create a new client instance from environment.
+     * Create a client instance from environment.
      */
-    public static function make(?Repository $config = null): static
+    public static function make(): static
     {
-        return new self(
-            getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT,
-            $config ?? FileRepository::createFromEnvironment()
-        );
+        return new self(getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT);
+    }
+
+    public function setToken(string $token): void
+    {
+        $this->token = $token;
     }
 
     public function user(): Response
@@ -179,8 +183,8 @@ final class Dew implements Client
             'Accept' => 'application/json',
         ];
 
-        if (is_string($this->config->get('token'))) {
-            $headers['Authorization'] = 'Bearer '.$this->config->get('token');
+        if (is_string($this->token)) {
+            $headers['Authorization'] = 'Bearer '.$this->token;
         }
 
         return new GuzzleClient([

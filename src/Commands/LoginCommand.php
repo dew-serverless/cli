@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Configuration\ArrayRepository;
 use Dew\Cli\Configuration\Repository;
 use Dew\Cli\Contracts\Client;
-use Dew\Cli\Dew;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +19,7 @@ final class LoginCommand extends Command
      * Create a new command instance.
      */
     public function __construct(
+        private Client $client,
         private Repository $config
     ) {
         parent::__construct();
@@ -37,8 +36,8 @@ final class LoginCommand extends Command
             return Command::SUCCESS;
         }
 
-        $token = $this->askToken($io);
-        $response = $this->client($token)->user();
+        $this->client->setToken($token = $this->askToken($io));
+        $response = $this->client->user();
 
         if ($response->unauthorized()) {
             $io->error('The token is invalid.');
@@ -83,13 +82,5 @@ final class LoginCommand extends Command
 
             return $token;
         });
-    }
-
-    /**
-     * Create a client for token validation.
-     */
-    private function client(string $token): Client
-    {
-        return Dew::make(new ArrayRepository(['token' => $token]));
     }
 }

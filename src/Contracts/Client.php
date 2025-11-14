@@ -13,6 +13,11 @@ use Dew\Cli\Models\Command;
 interface Client
 {
     /**
+     * Configure the access token.
+     */
+    public function setToken(string $token): void;
+
+    /**
      * The authenticated user.
      *
      * @return \Dew\Cli\Http\Response<User>
