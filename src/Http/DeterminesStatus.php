@@ -23,7 +23,7 @@ trait DeterminesStatus
             return true;
         }
 
-        return (bool) $this->serverError();
+        return $this->serverError();
     }
 
     /**
