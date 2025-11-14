@@ -7,9 +7,13 @@ namespace Dew\Cli;
 use Dew\Cli\Configuration\FileRepository;
 use Dew\Cli\Configuration\Repository;
 use Dew\Cli\Contracts\Client;
+use Dew\Cli\Http\Response;
 use Dew\Cli\Models\Command;
 use GuzzleHttp\Client as GuzzleClient;
 
+/**
+ * @phpstan-import-type User from \Dew\Cli\Contracts\Client
+ */
 final class Dew implements Client
 {
     /**
@@ -38,12 +42,12 @@ final class Dew implements Client
         );
     }
 
-    public function user(): array
+    public function user(): Response
     {
-        $response = $this->client()->request('GET', '/api/user');
-        $contents = (string) $response->getBody();
+        /** @var \Dew\Cli\Http\Response<User> */
+        $response = new Response($this->client()->request('GET', '/api/user'));
 
-        return json_decode($contents, associative: true);
+        return $response;
     }
 
     public function createDeployment(int $projectId, array $data): array
@@ -183,6 +187,7 @@ final class Dew implements Client
             'base_uri' => $this->endpoint,
             'headers' => $headers,
             'timeout' => 3.0,
+            'http_errors' => false,
         ]);
     }
 }

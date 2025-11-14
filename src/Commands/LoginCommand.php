@@ -8,7 +8,6 @@ use Dew\Cli\Configuration\ArrayRepository;
 use Dew\Cli\Configuration\Repository;
 use Dew\Cli\Contracts\Client;
 use Dew\Cli\Dew;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,33 +42,30 @@ final class LoginCommand extends Command
         while ($attempts < self::MAX_ATTEMPTS) {
             $attempts++;
 
-            try {
-                $token = $this->askToken($io);
-                $user = $this->client($token)->user();
-                $this->config->set('token', $token);
-                $io->success(sprintf('You are logged in as %s.', $user['name']));
+            $token = $this->askToken($io);
+            $response = $this->client($token)->user();
 
-                return Command::SUCCESS;
-            } catch (ClientException $e) {
-                $status = $e->getResponse()->getStatusCode();
+            if ($response->unauthorized()) {
+                $remaining = self::MAX_ATTEMPTS - $attempts;
 
-                if ($status === 401) {
-                    $remaining = self::MAX_ATTEMPTS - $attempts;
+                $remaining > 0
+                    ? $io->error(sprintf('The token is invalid. You have %d attempt(s) left.', $remaining))
+                    : $io->error('The token is invalid.');
 
-                    $remaining > 0
-                        ? $io->error(sprintf('The token is invalid. You have %d attempt(s) left.', $remaining))
-                        : $io->error('The token is invalid.');
+                continue;
+            }
 
-                    continue;
-                }
-
-                $contents = (string) $e->getResponse()->getBody();
-                $decoded = json_decode($contents, associative: true);
-                $message = $decoded['message'] ?? 'Unknown error occurred.';
+            if ($response->error()) {
+                $message = $response->json('message', 'Unknown error occurred.');
                 $io->error('Failed to authenticate: '.$message);
 
                 return Command::FAILURE;
             }
+
+            $this->config->set('token', $token);
+            $io->success(sprintf('You are logged in as %s.', $response->json('name')));
+
+            return Command::SUCCESS;
         }
 
         return Command::FAILURE;
@@ -82,7 +78,7 @@ final class LoginCommand extends Command
     {
         return $io->askHidden('What is your Dew API token', function (?string $token): string {
             if ($token === null || $token === '') {
-                throw new \RuntimeException('The token must not be empty.');
+                throw new \InvalidArgumentException('The token must not be empty.');
             }
 
             return $token;
@@ -94,8 +90,6 @@ final class LoginCommand extends Command
      */
     private function client(string $token): Client
     {
-        return Dew::make(
-            new ArrayRepository(['token' => $token])
-        );
+        return Dew::make(new ArrayRepository(['token' => $token]));
     }
 }

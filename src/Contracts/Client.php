@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Contracts;
 
+use Dew\Cli\Http\Response;
 use Dew\Cli\Models\Command;
 
 /**
@@ -14,9 +15,9 @@ interface Client
     /**
      * The authenticated user.
      *
-     * @return User
+     * @return \Dew\Cli\Http\Response<User>
      */
-    public function user(): array;
+    public function user(): Response;
 
     /**
      * @param  array<string, mixed>  $data
