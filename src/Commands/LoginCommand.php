@@ -75,7 +75,7 @@ final class LoginCommand extends Command
      */
     private function askToken(SymfonyStyle $io): string
     {
-        return $io->askHidden('What is your Dew API token', function (?string $token): string {
+        return $io->askHidden('What is your Dew API token?', function (?string $token): string {
             if ($token === null || $token === '') {
                 throw new \InvalidArgumentException('The token must not be empty.');
             }
