@@ -14,7 +14,7 @@ final class FileRepository implements Repository
     private array $config = [];
 
     /**
-     * Create a new repository instance.
+     * Create a repository instance.
      */
     public function __construct(
         private string $path
@@ -23,7 +23,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Create a new configuration repository from the environment.
+     * Create a repository instance from the environment context.
      */
     public static function createFromEnvironment(): self
     {
@@ -53,7 +53,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Load the configuration from the file.
+     * Load configurations from the path.
      */
     private function load(): void
     {
@@ -67,7 +67,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Store a config value.
+     * Store a configuration item.
      */
     public function set(string $key, mixed $value): self
     {
@@ -77,7 +77,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Retrieve a config value.
+     * Retrieve a configuration value.
      */
     public function get(string $key, mixed $default = null): mixed
     {
@@ -85,7 +85,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Determine if the config has a given key.
+     * Determine if configurations have a given item.
      */
     public function has(string $key): bool
     {
@@ -93,7 +93,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Remove a config value.
+     * Remove a configuration item.
      */
     public function remove(string $key): self
     {
@@ -103,7 +103,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Retrieve all config values.
+     * Retrieve all configurations.
      *
      * @return array<string, mixed>
      */
@@ -113,7 +113,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Remove all config values.
+     * Empty all configurations.
      */
     public function flush(): self
     {
@@ -123,7 +123,7 @@ final class FileRepository implements Repository
     }
 
     /**
-     * Persist the configuration to the file.
+     * Persist configurations to the path.
      */
     private function persist(): self
     {

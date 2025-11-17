@@ -7,34 +7,34 @@ namespace Dew\Cli\Configuration;
 interface Repository
 {
     /**
-     * Store a config value.
+     * Store a configuration item.
      */
     public function set(string $key, mixed $value): self;
 
     /**
-     * Retrieve a config value.
+     * Retrieve a configuration value.
      */
     public function get(string $key, mixed $default = null): mixed;
 
     /**
-     * Determine if the config has a given key.
+     * Determine if configurations have a given item.
      */
     public function has(string $key): bool;
 
     /**
-     * Remove a config value.
+     * Remove a configuration item.
      */
     public function remove(string $key): self;
 
     /**
-     * Retrieve all config values.
+     * Retrieve all configurations.
      *
      * @return array<string, mixed>
      */
     public function all(): array;
 
     /**
-     * Remove all config values.
+     * Empty all configurations.
      */
     public function flush(): self;
 }

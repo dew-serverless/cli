@@ -7,7 +7,7 @@ namespace Dew\Cli\Configuration;
 final class ArrayRepository implements Repository
 {
     /**
-     * Create a new repository instance.
+     * Create a repository instance.
      *
      * @param  array<string, mixed>  $config
      */
@@ -18,7 +18,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Store a config value.
+     * Store a configuration item.
      */
     public function set(string $key, mixed $value): self
     {
@@ -28,7 +28,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Retrieve a config value.
+     * Retrieve a configuration value.
      */
     public function get(string $key, mixed $default = null): mixed
     {
@@ -36,7 +36,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Determine if the config has a given key.
+     * Determine if configurations have a given item.
      */
     public function has(string $key): bool
     {
@@ -44,7 +44,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Remove a config value.
+     * Remove a configuration item.
      */
     public function remove(string $key): self
     {
@@ -54,7 +54,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Retrieve all config values.
+     * Retrieve all configurations.
      *
      * @return array<string, mixed>
      */
@@ -64,7 +64,7 @@ final class ArrayRepository implements Repository
     }
 
     /**
-     * Remove all config values.
+     * Empty all configurations.
      */
     public function flush(): self
     {
