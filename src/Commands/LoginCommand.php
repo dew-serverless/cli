@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class LoginCommand extends Command
 {
     /**
-     * Create a new command instance.
+     * Create a command instance.
      */
     public function __construct(
         private Client $client,
@@ -26,7 +26,7 @@ final class LoginCommand extends Command
     }
 
     /**
-     * Executes the current command.
+     * Execute the command.
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -59,7 +59,7 @@ final class LoginCommand extends Command
     }
 
     /**
-     * Ask the user to confirm overwriting an existing token if there is one.
+     * Ask if override the existing token if it is already configured.
      */
     private function ensureTokenIsNotConfigured(SymfonyStyle $io): bool
     {
@@ -71,7 +71,7 @@ final class LoginCommand extends Command
     }
 
     /**
-     * Ask the user for their Dew API token.
+     * Ask for the access token.
      */
     private function askToken(SymfonyStyle $io): string
     {
