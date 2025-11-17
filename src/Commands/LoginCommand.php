@@ -39,7 +39,7 @@ final class LoginCommand extends Command
         $this->client->setToken($token = $this->askToken($io));
         $response = $this->client->user();
 
-        if ($response->unauthorized()) {
+        if ($response->unauthenticated()) {
             $io->error('The token is invalid.');
 
             return Command::FAILURE;

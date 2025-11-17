@@ -7,9 +7,9 @@ namespace Dew\Cli\Http;
 trait DeterminesStatus
 {
     /**
-     * Determines if the status code is 401 Unauthorized.
+     * Determines if the status code is 401 Unauthenticated.
      */
-    public function unauthorized(): bool
+    public function unauthenticated(): bool
     {
         return $this->status() === 401;
     }
