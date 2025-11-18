@@ -59,7 +59,7 @@ final class LoginCommand extends Command
     }
 
     /**
-     * Ask if override the existing token if it is already configured.
+     * Ask whether to override the existing token if it is already configured.
      */
     private function ensureTokenIsNotConfigured(SymfonyStyle $io): bool
     {
