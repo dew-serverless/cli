@@ -63,7 +63,8 @@ final class FileRepository implements Repository
             throw new \RuntimeException("Failed to read configuration file: {$this->path}");
         }
 
-        $this->config = json_decode($contents, associative: true, flags: JSON_THROW_ON_ERROR);
+        $decoded = json_decode($contents, associative: true, flags: JSON_THROW_ON_ERROR);
+        $this->config = is_array($decoded) ? $decoded : [];
     }
 
     /**
