@@ -55,7 +55,7 @@ final class Response
     {
         $this->decoded = is_array($this->decoded)
             ? $this->decoded
-            : json_decode($this->body(), associative: true);
+            : json_decode($this->body(), associative: true, flags: JSON_THROW_ON_ERROR);
 
         return data_get($this->decoded, $key, $default);
     }
