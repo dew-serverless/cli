@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\Database\CreateDatabaseInstanceHandler;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -33,7 +33,7 @@ class DatabaseCreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         (new CreateDatabaseInstanceHandler($input, new SymfonyStyle($input, $output)))
-            ->clientUsing(Client::make())
+            ->clientUsing(Dew::make())
             ->forProject(ProjectConfig::load()->getId())
             ->handle();
 

@@ -12,6 +12,8 @@ use Dew\Cli\Commands\LoginCommand;
 use Dew\Cli\Commands\ProjectConnectCommand;
 use Dew\Cli\Commands\ProjectCreateCommand;
 use Dew\Cli\Commands\RollbackCommand;
+use Dew\Cli\Configuration\FileRepository;
+use Dew\Cli\Dew;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
@@ -20,9 +22,15 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require_once __DIR__.'/../../autoload.php';
 }
 
-$app = new Application('Dew CLI', 'v0.0.1');
+$client = Dew::make();
+$config = FileRepository::createFromEnvironment();
 
-$app->add(new LoginCommand);
+if ($config->has('token')) {
+    $client->setToken($config->get('token'));
+}
+
+$app = new Application('Dew CLI', 'v0.0.1');
+$app->add(new LoginCommand($client, $config));
 $app->add(new ProjectCreateCommand);
 $app->add(new ProjectConnectCommand);
 $app->add(new InitCommand);

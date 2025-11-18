@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,7 +29,7 @@ class ProjectConnectCommand extends Command
         $key = $input->getArgument('key') ?: $io->ask('ACS access key id');
         $secret = $input->getArgument('secret') ?: $io->askHidden('ACS access key secret');
 
-        $response = Client::make()
+        $response = Dew::make()
             ->post(sprintf('/api/projects/%s/connect', $input->getArgument('project')), [
                 'access_key_id' => $key,
                 'access_key_secret' => $secret,

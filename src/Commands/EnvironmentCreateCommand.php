@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +26,7 @@ class EnvironmentCreateCommand extends Command
         $projectConfig = ProjectConfig::load();
         $io = new SymfonyStyle($input, $output);
 
-        $response = Client::make()
+        $response = Dew::make()
             ->post(sprintf('/api/projects/%s/environments', $projectConfig->getId()), [
                 'name' => $input->getArgument('name') ?: $io->ask('Environment name'),
             ]);

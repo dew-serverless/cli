@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Deployments\CopyFilesToBuildDirectory;
 use Dew\Cli\Deployments\PackageUpBuildDirectory;
 use Dew\Cli\Deployments\PrepareBuildDirectory;
@@ -34,7 +34,7 @@ class Deployment
         ReleaseVersion::class,
     ];
 
-    public CommunicatesWithDew $client;
+    public Client $client;
 
     /**
      * Context of the deployment.
@@ -66,7 +66,7 @@ class Deployment
         //
     }
 
-    public function clientUsing(CommunicatesWithDew $client): self
+    public function clientUsing(Client $client): self
     {
         $this->client = $client;
 

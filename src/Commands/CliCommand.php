@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\ExecuteCommand;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,7 +30,7 @@ class CliCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return (new ExecuteCommand(Client::make(), $output))
+        return (new ExecuteCommand(Dew::make(), $output))
             ->forProject(ProjectConfig::load()->getId())
             ->on($input->getArgument('env'))
             ->execute($input->getArgument('cmd'));

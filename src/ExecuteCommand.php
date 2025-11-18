@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Models\Command as Model;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +25,7 @@ final class ExecuteCommand
      * Create a new execute command action.
      */
     public function __construct(
-        private CommunicatesWithDew $dew,
+        private Client           $dew,
         private ?OutputInterface $output = null
     ) {
         //

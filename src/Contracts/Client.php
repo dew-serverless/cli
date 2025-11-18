@@ -4,10 +4,26 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Contracts;
 
+use Dew\Cli\Http\Response;
 use Dew\Cli\Models\Command;
 
-interface CommunicatesWithDew
+/**
+ * @phpstan-type User array{id: int, name: string, email: string}
+ */
+interface Client
 {
+    /**
+     * Configure the access token.
+     */
+    public function setToken(string $token): void;
+
+    /**
+     * The authenticated user.
+     *
+     * @return \Dew\Cli\Http\Response<User>
+     */
+    public function user(): Response;
+
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>

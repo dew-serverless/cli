@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\InteractsWithDew;
 
 class DeleteDatabaseInstance
@@ -46,7 +46,7 @@ class DeleteDatabaseInstance
      */
     public function delete(): void
     {
-        Client::make()
+        Dew::make()
             ->delete('/api/projects/'.$this->projectId.'/databases/'.$this->instance, [
                 'name' => $this->instance,
             ]);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Tests\Fixtures;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 use Dew\Cli\Contracts\DatabaseStorageRange;
 use Dew\Cli\Contracts\InstanceQuotation;
 use Dew\Cli\Database\InstanceType;
@@ -19,7 +19,7 @@ final class StubMySqlServerlessDatabaseInstanceQuoter extends QuoteDatabaseInsta
 
     public static function make(): static
     {
-        return new self(Mockery::mock(CommunicatesWithDew::class), 1);
+        return new self(Mockery::mock(Client::class), 1);
     }
 
     public function type(): string

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\Deployment;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +31,7 @@ class DeployCommand extends Command
 
         $deployment = (new Deployment(getcwd()))
             ->usePublicPath('/public')
-            ->clientUsing(Client::make())
+            ->clientUsing(Dew::make())
             ->configUsing(ProjectConfig::load())
             ->production($input->getOption('prod'))
             ->outputUsing($output);

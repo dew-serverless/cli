@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Database;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
 
 abstract class CreateDatabaseInstance
 {
@@ -16,8 +16,8 @@ abstract class CreateDatabaseInstance
     public string $name;
 
     public function __construct(
-        private CommunicatesWithDew $client,
-        private int $projectId
+        private Client $client,
+        private int    $projectId
     ) {
         //
     }

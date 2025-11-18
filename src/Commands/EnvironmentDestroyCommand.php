@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dew\Cli\Commands;
 
-use Dew\Cli\Client;
+use Dew\Cli\Dew;
 use Dew\Cli\ProjectConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +27,7 @@ class EnvironmentDestroyCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $environment = $input->getArgument('name') ?: $io->ask('Environment name');
 
-        $response = Client::make()->delete(sprintf(
+        $response = Dew::make()->delete(sprintf(
             '/api/projects/%s/environments/%s',
             $projectConfig->getId(), $environment
         ));

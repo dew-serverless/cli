@@ -4,33 +4,54 @@ declare(strict_types=1);
 
 namespace Dew\Cli;
 
-use Dew\Cli\Contracts\CommunicatesWithDew;
+use Dew\Cli\Contracts\Client;
+use Dew\Cli\Http\Response;
 use Dew\Cli\Models\Command;
 use GuzzleHttp\Client as GuzzleClient;
 
-final class Client implements CommunicatesWithDew
+/**
+ * @phpstan-import-type User from \Dew\Cli\Contracts\Client
+ */
+final class Dew implements Client
 {
     /**
-     * Create a new Dew client.
+     * The production endpoint.
+     */
+    private const DEFAULT_ENDPOINT = 'https://dew.work';
+
+    /**
+     * The access token.
+     */
+    private ?string $token = null;
+
+    /**
+     * Create a client instance.
      */
     public function __construct(
-        private string $endpoint,
-        private string $token
+        private string $endpoint
     ) {
-        //
+        $this->endpoint = rtrim($endpoint, '/').'/';
     }
 
     /**
-     * Create a new Dew client from the configuration setup.
-     *
-     * @param  array<string, mixed>  $config
+     * Create a client instance from environment.
      */
-    public static function make(array $config = []): static
+    public static function make(): static
     {
-        return new self(
-            $config['endpoint'] ?? getenv('DEW_ENDPOINT'),
-            $config['token'] ?? Configuration::createFromEnvironment()->getToken()
-        );
+        return new self(getenv('DEW_ENDPOINT') ?: self::DEFAULT_ENDPOINT);
+    }
+
+    public function setToken(string $token): void
+    {
+        $this->token = $token;
+    }
+
+    public function user(): Response
+    {
+        /** @var \Dew\Cli\Http\Response<User> */
+        $response = new Response($this->client()->request('GET', '/api/user'));
+
+        return $response;
     }
 
     public function createDeployment(int $projectId, array $data): array
@@ -154,16 +175,23 @@ final class Client implements CommunicatesWithDew
     }
 
     /**
-     * Make a new Guzzle client.
+     * Create a new Guzzle HTTP client.
      */
     private function client(): GuzzleClient
     {
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+
+        if (is_string($this->token)) {
+            $headers['Authorization'] = 'Bearer '.$this->token;
+        }
+
         return new GuzzleClient([
             'base_uri' => $this->endpoint,
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$this->token,
-            ],
+            'headers' => $headers,
+            'timeout' => 3.0,
+            'http_errors' => false,
         ]);
     }
 }
