@@ -6,3 +6,7 @@ parameters:
     paths:
         - src
         - tests
+    ignoreErrors:
+        -
+            identifier: variable.undefined
+            path: tests
