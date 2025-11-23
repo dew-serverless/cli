@@ -18,7 +18,7 @@ final class ArrayManifest implements Manifest
     }
 
     /**
-     * Determine if the manifest file exists.
+     * Determine if the manifest exists.
      */
     public function exists(): bool
     {

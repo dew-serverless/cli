@@ -7,7 +7,7 @@ namespace Dew\Cli;
 interface Manifest
 {
     /**
-     * Determine if the manifest file exists.
+     * Determine if the manifest exists.
      */
     public function exists(): bool;
 
