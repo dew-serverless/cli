@@ -7,7 +7,6 @@ use Dew\Cli\Commands\InitCommand;
 use Dew\Cli\Configuration\ArrayRepository;
 use Dew\Cli\Contracts\Client;
 use Dew\Cli\Http\Response;
-use Dew\Cli\Manifest;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use Mockery as m;
 use Symfony\Component\Console\Command\Command;
