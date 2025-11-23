@@ -189,7 +189,7 @@ final class InitCommand extends Command
                 throw new \RuntimeException('Project slug cannot exceed 16 characters.');
             }
 
-            if (in_array(preg_match('/^[a-z0-9-]+$/', $value), [0, false], true)) {
+            if (preg_match('/^[a-z0-9-]+$/', $value) !== 1) {
                 throw new \RuntimeException('Project slug must only contain lowercase letters, numbers, and hyphens.');
             }
 
