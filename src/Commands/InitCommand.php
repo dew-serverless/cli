@@ -121,16 +121,7 @@ final class InitCommand extends Command
     {
         $name = $this->askName($io);
         $slug = $this->askSlug($io, $name);
-
-        $availableRegions = $this->client->regions()->json('data', []);
-
-        if ($availableRegions === []) {
-            $io->error('No regions available. Please try again later.');
-
-            return Command::FAILURE;
-        }
-
-        $region = $io->choice('The project region', $availableRegions, $availableRegions[0]);
+        $region = $this->askRegion($io);
 
         $io->table(
             ['Name', 'Slug', 'Region'],
@@ -214,5 +205,27 @@ final class InitCommand extends Command
 
             return $value;
         });
+    }
+
+    /**
+     * Ask for the project region.
+     */
+    private function askRegion(SymfonyStyle $io): string
+    {
+        $response = $this->client->regions();
+
+        if ($response->error()) {
+            throw new \RuntimeException(sprintf('Could not retrieve regions: %s',
+                $response->json('message', 'Unknown error occurred.')
+            ));
+        }
+
+        $availableRegions = $response->json('data', []);
+
+        if ($availableRegions === []) {
+            throw new \RuntimeException('No regions available. Please try again later.');
+        }
+
+        return $io->choice('The project region', $availableRegions, $availableRegions[0]);
     }
 }
