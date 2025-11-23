@@ -67,7 +67,7 @@ test('file manifest writes with correct permissions', function (): void {
     $manifest = new FileManifest($this->rootPath);
     $manifest->write(['id' => 1]);
     expect(file_exists($this->manifestPath))->toBeTrue()
-        ->and(substr(sprintf('%o', fileperms($this->manifestPath)), -4))->toBe('0644');
+        ->and(fileperms($this->manifestPath) & 0777)->toBe(0644);
 });
 
 test('file manifest can retrieve all items from file', function (): void {
