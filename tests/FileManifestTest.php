@@ -35,11 +35,13 @@ test('file manifest exists when file is present', function (): void {
     expect($manifest->exists())->toBeTrue();
 });
 
-test('file manifest can retrieve item from file', function (): void {
+test('file manifest can write data to and retrieve items from file', function (): void {
     $manifest = new FileManifest($this->rootPath);
     $manifest->write(['id' => 1, 'name' => 'test']);
-    expect($manifest->get('id'))->toBe(1);
-    expect($manifest->get('name'))->toBe('test');
+    expect($manifest->exists())->toBeTrue()
+        ->and($manifest->get('id'))->toBe(1)
+        ->and($manifest->get('name'))->toBe('test')
+        ->and(file_exists($this->manifestPath))->toBeTrue();
 });
 
 test('file manifest returns default when key does not exist', function (): void {
@@ -52,15 +54,6 @@ test('file manifest returns default when key does not exist', function (): void 
 test('file manifest throws exception when file does not exist', function (): void {
     $manifest = new FileManifest($this->rootPath);
     expect(fn (): array => $manifest->all())->toThrow(\RuntimeException::class);
-});
-
-test('file manifest can write data to file', function (): void {
-    $manifest = new FileManifest($this->rootPath);
-    $manifest->write(['id' => 1, 'name' => 'test']);
-    expect($manifest->exists())->toBeTrue()
-        ->and($manifest->get('id'))->toBe(1)
-        ->and($manifest->get('name'))->toBe('test')
-        ->and(file_exists($this->manifestPath))->toBeTrue();
 });
 
 test('file manifest writes with correct permissions', function (): void {
