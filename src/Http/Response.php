@@ -7,7 +7,7 @@ namespace Dew\Cli\Http;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @template T of array<string, mixed>
+ * @template T of array<mixed>
  */
 final class Response
 {
@@ -48,7 +48,6 @@ final class Response
     /**
      * Get the decoded data.
      *
-     * @param  key-of<T>|string|null  $key
      * @return ($key is null ? T : mixed)
      */
     public function json(?string $key = null, mixed $default = null): mixed

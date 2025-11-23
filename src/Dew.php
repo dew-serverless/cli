@@ -11,6 +11,7 @@ use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * @phpstan-import-type User from \Dew\Cli\Contracts\Client
+ * @phpstan-import-type Project from \Dew\Cli\Contracts\Client
  */
 final class Dew implements Client
 {
@@ -52,6 +53,42 @@ final class Dew implements Client
         $response = new Response($this->client()->request('GET', '/api/user'));
 
         return $response;
+    }
+
+    public function regions(): Response
+    {
+        /** @var \Dew\Cli\Http\Response<array{data: string[]}> */
+        $response = new Response($this->client()->get('/api/regions'));
+
+        return $this->handleResponse($response);
+    }
+
+    public function createProject(array $data): Response
+    {
+        /** @var \Dew\Cli\Http\Response<array{data: Project}> */
+        $response = new Response($this->client()->post(
+            '/api/projects', ['json' => $data]
+        ));
+
+        return $this->handleResponse($response);
+    }
+
+    public function checkProjectSlug(string $slug): Response
+    {
+        /** @var \Dew\Cli\Http\Response<array{data: array{available: bool}}> */
+        $response = new Response($this->client()->get(
+            '/api/projects/check-slug', ['query' => ['slug' => $slug]]
+        ));
+
+        return $this->handleResponse($response);
+    }
+
+    public function listProjects(): Response
+    {
+        /** @var \Dew\Cli\Http\Response<array{data: Project[]}> */
+        $response = new Response($this->client()->get('/api/projects'));
+
+        return $this->handleResponse($response);
     }
 
     public function createDeployment(int $projectId, array $data): array
@@ -172,6 +209,24 @@ final class Dew implements Client
     public function delete(string $uri, array $data = []): mixed
     {
         return $this->send('DELETE', $uri, $data);
+    }
+
+    /**
+     * Handle the HTTP response.
+     *
+     * @template T of array<mixed>
+     * @param  \Dew\Cli\Http\Response<T>  $response
+     * @return \Dew\Cli\Http\Response<T>
+     */
+    private function handleResponse(Response $response): Response
+    {
+        if ($response->unauthenticated()) {
+            throw new \RuntimeException(
+                'The access token is invalid or has expired. Please log in again with `dew login` command.'
+            );
+        }
+
+        return $response;
     }
 
     /**
