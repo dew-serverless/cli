@@ -55,11 +55,15 @@ final class FileManifest implements Manifest
             return;
         }
 
-        $this->data = json_decode(
-            file_get_contents($this->filePath),
-            associative: true,
-            flags: JSON_THROW_ON_ERROR
-        );
+        $contents = file_get_contents($this->filePath);
+
+        if ($contents === false) {
+            throw new \RuntimeException(sprintf(
+                'Could not read manifest file %s.', $this->filePath
+            ));
+        }
+
+        $this->data = json_decode($contents, associative: true, flags: JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -72,7 +76,12 @@ final class FileManifest implements Manifest
         $this->ensureDirectoryExists();
 
         $contents = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
-        file_put_contents($this->filePath, $contents, LOCK_EX);
+
+        if (file_put_contents($this->filePath, $contents, LOCK_EX) === false) {
+            throw new \RuntimeException(sprintf(
+                'Could not write manifest file %s.', $this->filePath
+            ));
+        }
 
         chmod($this->filePath, 0644);
 
