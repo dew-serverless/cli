@@ -9,7 +9,6 @@ use Dew\Cli\Commands\EnvironmentCreateCommand;
 use Dew\Cli\Commands\EnvironmentDestroyCommand;
 use Dew\Cli\Commands\InitCommand;
 use Dew\Cli\Commands\LoginCommand;
-use Dew\Cli\Commands\ProjectConnectCommand;
 use Dew\Cli\Commands\RollbackCommand;
 use Dew\Cli\Configuration\FileRepository;
 use Dew\Cli\Dew;
@@ -33,7 +32,6 @@ if ($config->has('token')) {
 
 $app = new Application('Dew CLI', 'v0.0.1');
 $app->add(new LoginCommand($client, $config));
-$app->add(new ProjectConnectCommand);
 $app->add(new InitCommand($client, $config, $manifest, $rootPath));
 $app->add(new EnvironmentCreateCommand);
 $app->add(new EnvironmentDestroyCommand);
