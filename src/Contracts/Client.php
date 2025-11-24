@@ -56,6 +56,14 @@ interface Client
     public function listProjects(): Response;
 
     /**
+     * Connect the project with Alibaba Cloud.
+     *
+     * @param  array{access_key_id: string, access_key_secret: string}  $data
+     * @return \Dew\Cli\Http\Response<array<string, mixed>>
+     */
+    public function connectAcsAccount(int $projectId, array $data): Response;
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
