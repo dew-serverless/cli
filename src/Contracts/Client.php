@@ -10,7 +10,7 @@ use Dew\Cli\Models\Command;
 /**
  * @phpstan-type User array{id: int, name: string, email: string}
  * @phpstan-type Team array{id: string, user_id: int, name: string, personal_team: bool, created_at: string, updated_at: string}
- * @phpstan-type Project array{id: int, name: string, slug: string, region: string, status: string, team?: Team, created_at: string, updated_at: string}
+ * @phpstan-type Project array{id: int, name: string, slug: string, region: string, status: string, is_acs_connected: bool, team?: Team, created_at: string, updated_at: string}
  */
 interface Client
 {
@@ -47,6 +47,13 @@ interface Client
      * @return \Dew\Cli\Http\Response<array{data: array{available: bool}}>
      */
     public function checkProjectSlug(string $slug): Response;
+
+    /**
+     * Retrieve a project by ID.
+     *
+     * @return \Dew\Cli\Http\Response<array{data: Project}>
+     */
+    public function getProject(int $projectId): Response;
 
     /**
      * List projects of the current team.

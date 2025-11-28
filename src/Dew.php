@@ -83,6 +83,16 @@ final class Dew implements Client
         return $this->handleResponse($response);
     }
 
+    public function getProject(int $projectId): Response
+    {
+        /** @var \Dew\Cli\Http\Response<array{data: Project}> */
+        $response = new Response($this->client()->get(
+            sprintf('/api/projects/%s', $projectId)
+        ));
+
+        return $this->handleResponse($response);
+    }
+
     public function listProjects(): Response
     {
         /** @var \Dew\Cli\Http\Response<array{data: Project[]}> */

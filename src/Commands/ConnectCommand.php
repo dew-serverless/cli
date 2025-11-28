@@ -47,7 +47,13 @@ final class ConnectCommand extends Command
             return Command::FAILURE;
         }
 
-        $response = $this->client->connectAcsAccount($this->manifest->get('id'), [
+        $projectId = $this->manifest->get('id');
+
+        if (! $this->ensureIsntConnected($io, $projectId)) {
+            return Command::FAILURE;
+        }
+
+        $response = $this->client->connectAcsAccount($projectId, [
             'access_key_id' => $this->askKeyId($io),
             'access_key_secret' => $this->askKeySecret($io),
         ]);
@@ -64,6 +70,31 @@ final class ConnectCommand extends Command
         $io->success('Successfully connected Alibaba Cloud account');
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Ensure the project is not already connected to Alibaba Cloud.
+     */
+    private function ensureIsntConnected(SymfonyStyle $io, int $projectId): bool
+    {
+        $response = $this->client->getProject($projectId);
+
+        if ($response->error()) {
+            $io->error(sprintf(
+                'Could not retrieve project: %s',
+                $response->json('message', 'Unknown error occurred.')
+            ));
+
+            return false;
+        }
+
+        if ($response->json('data.is_acs_connected')) {
+            $io->note('This project is already connected to Alibaba Cloud.');
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
